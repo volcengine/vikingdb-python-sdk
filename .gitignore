@@ -1,4 +1,7 @@
 .vscode
 .idea
+
 __pycache__
 venv
+
+*.egg-info/

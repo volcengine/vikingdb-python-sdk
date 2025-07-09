@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vikingdb"
+dynamic = ["version"]
+description = "vikingdb Python SDK"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "Apache-2.0"}
+keywords = ["vikingdb", "vector", "bytedance", "volcengine", "sdk"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries",
+]
+
+[project.urls]
+Documentation = "https://github.com/volcengine/volc-vikingdb-python-sdk/README.md"
+Source = "https://github.com/volcengine/volc-vikingdb-python-sdk"
+
+[tool.setuptools]
+packages = {find = {where = ["vikingdb"]}}
+package-dir = {"" = "vikingdb"}
+
+[tool.setuptools.dynamic]
+version = {attr = "version.__version__"}
