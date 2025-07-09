@@ -5,7 +5,6 @@
 import json
 import unittest
 from unittest import mock
-from urllib.request import Request
 
 from vikingdb.core.client import VectorDBClient
 from vikingdb.version import __version__
