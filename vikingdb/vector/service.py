@@ -1,3 +1,5 @@
+# Copyright (c) 2025 Beijing Volcano Engine Technology Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
 
 from core import base_http_client
 from vector import param
@@ -19,8 +21,6 @@ class VectorService:
             host=host, scheme=scheme, port=port, max_connections=max_connections,
             max_retries=max_retries, backoff_factor=backoff_factor, timeout=timeout,
         )
-
-    # def
 
     def do_request(self,
             method: str,

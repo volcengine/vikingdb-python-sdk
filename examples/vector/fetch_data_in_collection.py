@@ -1,9 +1,12 @@
+# Copyright (c) 2025 Beijing Volcano Engine Technology Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 from vikingdb.vector import service
 
 if __name__ == '__main__':
     svc = service.VectorService(
         api_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJWaWtpbmdEQiIsImV4cCI6MTc1MjIyODkzOCwiUG9saWN5VHlwZSI6IlZpa2luZ0RCQVBJV3JpdGUiLCJSZXNvdXJjZUlEIjoidmRiLWZkNDQwNzBjZTI4YTQ5MmM4YmZlZGMwYWRlODZkODE5IiwiQWNjb3VudElEIjoiMjEwMTg1ODQ4NCIsIlVzZXJOYW1lIjoiUkRfVGVzdGluZyIsIlVzZXJJRCI6IjM2OTE0NjI3IiwiQ29sbGVjdGlvbiI6InRlc3RfbGl1eWFuZ19jb2xsX25ld192dHpfMSJ9.TdEC7cOEJi0K5ZnIEf5gpHz75atrDf6npQ-iCawqR5Q",
-        host="115.190.90.174",
+        host="api-vikingdb.vikingdb.cn-beijing.volces.com",
         scheme="http",
         port=None,
         max_connections=10,
