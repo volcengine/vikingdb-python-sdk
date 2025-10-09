@@ -1,3 +1,6 @@
+# Copyright (c) 2025 Beijing Volcano Engine Technology Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
