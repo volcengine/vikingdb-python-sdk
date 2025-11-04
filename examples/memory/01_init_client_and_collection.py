@@ -34,13 +34,13 @@ if __name__ == "__main__":
     
     # initialize collection
     ## example 1: using collection_name and project_name
-    collection = client.get_collection(
+    collection1 = client.get_collection(
         collection_name="sdk_test",  # Replace with your collection name
         project_name="default"
     )
 
     ## example 2: using resource_id
-    collection = client.get_collection(
+    collection2 = client.get_collection(
         resource_id="col-abc123xyz"
     )
     
