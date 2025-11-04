@@ -3,10 +3,20 @@
 
 from __future__ import annotations
 
-from typing import Mapping, Optional, Union, cast
+from typing import TYPE_CHECKING, Mapping, Optional, Union, cast
 
 from ..request_options import RequestOptions
 from .base import VectorClientBase
+from .client import (
+    API_VECTOR_DATA_AGGREGATE,
+    API_VECTOR_DATA_FETCH_IN_INDEX,
+    API_VECTOR_SEARCH_BY_ID,
+    API_VECTOR_SEARCH_BY_KEYWORDS,
+    API_VECTOR_SEARCH_BY_MULTI_MODAL,
+    API_VECTOR_SEARCH_BY_RANDOM,
+    API_VECTOR_SEARCH_BY_SCALAR,
+    API_VECTOR_SEARCH_BY_VECTOR,
+)
 from .models import (
     AggRequest,
     AggResponse,
@@ -23,12 +33,15 @@ from .models import (
     SearchResponse,
 )
 
+if TYPE_CHECKING:
+    from .client import VikingVector
+
 
 class IndexClient(VectorClientBase):
     """Client for index-scoped data operations."""
 
-    def __init__(self, transport, meta: IndexMeta) -> None:
-        super().__init__(transport)
+    def __init__(self, service: "VikingVector", meta: IndexMeta) -> None:
+        super().__init__(service)
         self._meta = meta
         self._meta_payload = meta.model_dump(by_alias=True, exclude_none=True)
 
@@ -42,7 +55,7 @@ class IndexClient(VectorClientBase):
         response = cast(
             FetchDataInIndexResponse,
             self._post(
-                "/api/vikingdb/data/fetch_in_index",
+                API_VECTOR_DATA_FETCH_IN_INDEX,
                 payload,
                 FetchDataInIndexResponse,
                 request_options=request_options,
@@ -60,7 +73,7 @@ class IndexClient(VectorClientBase):
         response = cast(
             SearchResponse,
             self._post(
-                "/api/vikingdb/data/search/vector",
+                API_VECTOR_SEARCH_BY_VECTOR,
                 payload,
                 SearchResponse,
                 request_options=request_options,
@@ -78,7 +91,7 @@ class IndexClient(VectorClientBase):
         response = cast(
             SearchResponse,
             self._post(
-                "/api/vikingdb/data/search/multi_modal",
+                API_VECTOR_SEARCH_BY_MULTI_MODAL,
                 payload,
                 SearchResponse,
                 request_options=request_options,
@@ -96,7 +109,7 @@ class IndexClient(VectorClientBase):
         response = cast(
             SearchResponse,
             self._post(
-                "/api/vikingdb/data/search/id",
+                API_VECTOR_SEARCH_BY_ID,
                 payload,
                 SearchResponse,
                 request_options=request_options,
@@ -114,7 +127,7 @@ class IndexClient(VectorClientBase):
         response = cast(
             SearchResponse,
             self._post(
-                "/api/vikingdb/data/search/scalar",
+                API_VECTOR_SEARCH_BY_SCALAR,
                 payload,
                 SearchResponse,
                 request_options=request_options,
@@ -132,7 +145,7 @@ class IndexClient(VectorClientBase):
         response = cast(
             SearchResponse,
             self._post(
-                "/api/vikingdb/data/search/keywords",
+                API_VECTOR_SEARCH_BY_KEYWORDS,
                 payload,
                 SearchResponse,
                 request_options=request_options,
@@ -150,7 +163,7 @@ class IndexClient(VectorClientBase):
         response = cast(
             SearchResponse,
             self._post(
-                "/api/vikingdb/data/search/random",
+                API_VECTOR_SEARCH_BY_RANDOM,
                 payload,
                 SearchResponse,
                 request_options=request_options,
@@ -168,7 +181,7 @@ class IndexClient(VectorClientBase):
         response = cast(
             AggResponse,
             self._post(
-                "/api/vikingdb/data/agg",
+                API_VECTOR_DATA_AGGREGATE,
                 payload,
                 AggResponse,
                 request_options=request_options,

@@ -3,12 +3,12 @@
 
 from __future__ import annotations
 
-from . import vector
 from .config import ClientConfig, RetryConfig
-from .credentials import APIKey, IAM
+from .auth import APIKey, IAM
 from .exceptions import HTTPError, TransportError, VikingDBError
 from .request_options import RequestOptions
-from .vector import CollectionClient, EmbeddingClient, IndexClient, VikingDB
+from . import vector
+from .vector import CollectionClient, EmbeddingClient, IndexClient, VikingVector
 
 __all__ = [
     "IAM",
@@ -21,7 +21,7 @@ __all__ = [
     "RequestOptions",
     "RetryConfig",
     "TransportError",
-    "VikingDB",
+    "VikingVector",
     "VikingDBError",
     "vector",
 ]

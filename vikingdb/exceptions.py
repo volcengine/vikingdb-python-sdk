@@ -43,4 +43,3 @@ class HTTPError(VikingDBError):
         if self.request_id:
             parts.append(f"request_id={self.request_id}")
         return " ".join(parts)
-

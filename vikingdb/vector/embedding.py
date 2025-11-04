@@ -3,10 +3,11 @@
 
 from __future__ import annotations
 
-from typing import Mapping, Optional, Union, cast
+from typing import TYPE_CHECKING, Mapping, Optional, Union, cast
 
 from ..request_options import RequestOptions
 from .base import VectorClientBase
+from .client import API_VECTOR_EMBEDDING
 from .models import EmbeddingRequest, EmbeddingResponse
 
 
@@ -23,7 +24,7 @@ class EmbeddingClient(VectorClientBase):
         response = cast(
             EmbeddingResponse,
             self._post(
-                "/api/vikingdb/embedding",
+                API_VECTOR_EMBEDDING,
                 payload,
                 EmbeddingResponse,
                 request_options=request_options,

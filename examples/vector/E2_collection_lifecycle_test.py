@@ -8,9 +8,10 @@ Follows the Go reference by showing both an inline lifecycle walkthrough and a h
 """
 from __future__ import annotations
 
-import time
-import pytest
 import os
+import time
+
+import pytest
 
 from vikingdb import IAM
 from vikingdb.vector import (
@@ -19,7 +20,7 @@ from vikingdb.vector import (
     SearchByMultiModalRequest,
     UpdateDataRequest,
     UpsertDataRequest,
-    VikingDB,
+    VikingVector,
 )
 
 from .guide_helpers import (
@@ -44,12 +45,18 @@ def test_snippet_collection_lifecycle() -> None:
       4. Fetch to verify.
       5. Delete the record.
     """
-    client = VikingDB(
-        endpoint=f"https://{os.environ['VIKINGDB_HOST']}",
+    auth = IAM(
+        ak=os.environ["VIKINGDB_AK"],
+        sk=os.environ["VIKINGDB_SK"],
+    )
+    client = VikingVector(
+        host=os.environ["VIKINGDB_HOST"],
         region=os.environ["VIKINGDB_REGION"],
-        timeout=30.0,
+        auth=auth,
+        scheme="https",
+        connection_timeout=30,
+        socket_timeout=30,
         user_agent="vikingdb-python-sdk-guide",
-        auth=IAM(os.environ["VIKINGDB_AK"], os.environ["VIKINGDB_SK"]),
     )
     collection_client = client.collection(collection_name=os.environ["VIKINGDB_COLLECTION"])
     index_client = client.index(

@@ -6,12 +6,13 @@ Scenario 3.1 – Multi-Modal Retrieval With Filters
 """
 from __future__ import annotations
 
-import time
-import pytest
 import os
+import time
+
+import pytest
 
 from vikingdb import IAM
-from vikingdb.vector import SearchByMultiModalRequest, UpsertDataRequest, VikingDB
+from vikingdb.vector import SearchByMultiModalRequest, UpsertDataRequest, VikingVector
 
 from .guide_helpers import (
     Clients,
@@ -33,12 +34,18 @@ def test_snippet_index_search_multimodal() -> None:
     """
     Inline multi-modal search showing filters and output fields.
     """
-    client = VikingDB(
-        endpoint=f"https://{os.environ['VIKINGDB_HOST']}",
+    auth = IAM(
+        ak=os.environ["VIKINGDB_AK"],
+        sk=os.environ["VIKINGDB_SK"],
+    )
+    client = VikingVector(
+        host=os.environ["VIKINGDB_HOST"],
         region=os.environ["VIKINGDB_REGION"],
-        timeout=30.0,
+        auth=auth,
+        scheme="https",
+        connection_timeout=30,
+        socket_timeout=30,
         user_agent="vikingdb-python-sdk-guide",
-        auth=IAM(os.environ["VIKINGDB_AK"], os.environ["VIKINGDB_SK"]),
     )
     collection_client = client.collection(collection_name=os.environ["VIKINGDB_COLLECTION"])
     index_client = client.index(

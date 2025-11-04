@@ -3,7 +3,7 @@
 This package provides an idiomatic Python interface to the VikingDB v2 data-plane APIs. The SDK mirrors the behaviour and API surface of the official Java and Go clients while embracing Python conventions (dataclasses/pydantic models, requests-based transport, and pytest-driven examples).
 
 ### Key Features
-- Shared client configuration with AK/SK signing (Volcano Engine V4) or API-key authentication.
+- Simple client configuration with AK/SK signing (Volcano Engine V4) or API-key authentication.
 - Request envelope handling with typed request/response models covering collection, index, and embedding workflows.
 - Pluggable retry strategy (exponential backoff with jitter) and per-request overrides (`RequestOptions`).
 - Executable example guides (`pytest` integration tests) that demonstrate connectivity, CRUD, search, analytics, and embedding scenarios against a real VikingDB environment.
@@ -22,14 +22,17 @@ pip install -e .
 
 ```python
 from vikingdb import IAM
-from vikingdb.vector import UpsertDataRequest, VikingDB
+from vikingdb.vector import UpsertDataRequest, VikingVector
 
-client = VikingDB(
-    endpoint="https://api.vector.bytedance.com",
+auth = IAM(ak="<AK>", sk="<SK>")
+client = VikingVector(
+    host="api.vector.bytedance.com",
     region="cn-beijing",
-    timeout=30.0,
+    auth=auth,
+    scheme="https",
+    connection_timeout=30,
+    socket_timeout=30,
     user_agent="vikingdb-python-sdk-demo",
-    auth=IAM("<AK>", "<SK>"),
 )
 
 collection = client.collection(collection_name="demo_collection")
@@ -87,8 +90,8 @@ Each scenario writes temporary documents using unique session tags and cleans th
 
 ### Architecture Overview
 
-- `vikingdb.config`, `vikingdb.credentials`, `vikingdb.transport`, `vikingdb.request_options`, and `vikingdb.exceptions` form the shared runtime used by all present and future SDK domains (vector, memory, knowledge).
-- Domain-specific features live under dedicated namespaces such as `vikingdb.vector`, where the high-level `VikingDB` client composes the shared transport/auth stack.
+- `vikingdb._client`, `vikingdb.config`, `vikingdb.auth`, `vikingdb.request_options`, and `vikingdb.exceptions` form the shared runtime used by all present and future SDK domains (vector, memory, knowledge).
+- Domain-specific features live under dedicated namespaces such as `vikingdb.vector`, where the high-level `VikingVector` client composes the shared auth stack atop the shared client.
 - Vector request/response models now surface directly from `vikingdb.vector` (backed internally by `vikingdb/vector/models`).
 - Imports from the root package now focus on cross-cutting utilities (auth, config, request options), while application code should pull vector functionality from `vikingdb.vector` explicitly.
 
@@ -96,11 +99,11 @@ Each scenario writes temporary documents using unique session tags and cleans th
 
 ```
 vikingdb/
+├── _client.py          # Shared base client built on volcengine Service
 ├── config.py            # Shared client / retry configuration
-├── credentials.py       # AK/SK and API-key auth strategies
+├── auth.py              # Shared auth providers (IAM, API key)
 ├── exceptions.py        # Error hierarchy reused across domains
 ├── request_options.py   # Per-request overrides shared by all services
-├── transport.py         # HTTP executor with retries and auth
 ├── version.py           # Package metadata
 ├── vector/              # Vector-specific clients and models
 │   ├── __init__.py      # High-level vector client and namespace exports
@@ -108,6 +111,7 @@ vikingdb/
 │   ├── collection.py    # Collection operations
 │   ├── embedding.py     # Embedding operations
 │   ├── index.py         # Index/search operations
+│   ├── client.py        # Vector service wrapper and high-level client
 │   └── models/          # Vector request/response models (pydantic)
 
 examples/vector/         # Integration guides (pytest)
