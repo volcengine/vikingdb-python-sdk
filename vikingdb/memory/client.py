@@ -1,4 +1,7 @@
 # coding:utf-8
+# Copyright (c) 2025 Beijing Volcano Engine Technology Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 """Viking Memory Service Main Service Class"""
 
 from __future__ import annotations

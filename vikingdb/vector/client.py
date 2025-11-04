@@ -1,3 +1,6 @@
+# Copyright (c) 2025 Beijing Volcano Engine Technology Co., Ltd.
+# SPDX-License-Identifier: Apache-2.0
+
 from __future__ import annotations
 
 import json
@@ -7,7 +10,7 @@ from volcengine.ApiInfo import ApiInfo
 
 from .._client import Client
 from ..auth import Auth
-from ..exceptions import VikingDBError
+from .exceptions import VikingVectorException
 from ..request_options import RequestOptions, ensure_request_options
 from ..version import __version__
 from .models import CollectionMeta, IndexMeta
@@ -130,7 +133,9 @@ class VikingVector(Client):
         try:
             return json.loads(response_text)
         except json.JSONDecodeError as exc:
-            raise VikingDBError(f"failed to decode response JSON: {exc}") from exc
+            raise VikingVectorException(
+                f"failed to decode response JSON: {exc}"
+            ) from exc
 
     def _build_api_info(self):
         header = {"Accept": "application/json"}
