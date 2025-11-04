@@ -16,9 +16,8 @@ Authentication support:
 - API Key authentication (reserved interface)
 """
 
-from .client import VikingMemClient
+from .client import VikingMem
 from .collection import Collection
-from .auth import AKSKAuthProvider, APIKeyAuthProvider, AuthProvider, create_auth_provider
 from .exceptions import (
     VikingMemException,
     UnauthorizedException,
@@ -43,7 +42,7 @@ from .exceptions import (
 
 __all__ = [
     # Main client classes
-    "VikingMemClient",
+    "VikingMem",
     "Collection",
     # Exception classes
     "VikingMemException",
@@ -66,4 +65,3 @@ __all__ = [
     "InternalServerException",
     "QuotaLimiterException",
 ]
-

@@ -5,21 +5,26 @@ Example 3: Search Memories
 
 import os
 import time
-from vikingdb.memory import VikingMemClient
+
+from vikingdb import IAM
+from vikingdb.memory import VikingMem
 
 
 # Initialize client (Recommended: initialize only once and reuse throughout the application lifecycle)
-client = VikingMemClient(
+_auth = IAM(
+    ak=os.getenv("VIKINGDB_AK", "your_ak"),
+    sk=os.getenv("VIKINGDB_SK", "your_sk"),
+)
+client = VikingMem(
     host="api-knowledgebase.mlp.cn-beijing.volces.com",
     region="cn-beijing",
-    ak=os.getenv("VOLC_ACCESSKEY", "your_ak"),
-    sk=os.getenv("VOLC_SECRETKEY", "your_sk"),
-    scheme="http"
+    auth=_auth,
+    scheme="http",
 )
 
 # Get collection (Recommended: get only once and reuse throughout the application lifecycle)
 collection = client.get_collection(
-    collection_name="sdk_demo1",  # Replace with your collection name
+    collection_name="sdk_test",  # Replace with your collection name
     project_name="default"
 )
 

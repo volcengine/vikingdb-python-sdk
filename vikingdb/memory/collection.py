@@ -21,7 +21,7 @@ class Collection:
         2. Using resource_id directly to identify the collection uniquely
         
         Args:
-            client (VikingMemClient): VikingMemClient instance
+            client (VikingMem): VikingMem instance
             collection_name (str, optional): Collection name. Required when not using resource_id.
             project_name (str, optional): Project name. Defaults to "default".
             resource_id (str, optional): Resource ID. When provided, takes precedence over collection_name/project_name.

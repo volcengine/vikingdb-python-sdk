@@ -3,8 +3,14 @@
 
 from __future__ import annotations
 
-from typing import Mapping, Optional, Union, cast
+from typing import TYPE_CHECKING, Mapping, Optional, Union, cast
 
+from .client import (
+    API_VECTOR_DATA_DELETE,
+    API_VECTOR_DATA_FETCH_IN_COLLECTION,
+    API_VECTOR_DATA_UPDATE,
+    API_VECTOR_DATA_UPSERT,
+)
 from .models import (
     CollectionMeta,
     DataApiResponse,
@@ -20,12 +26,15 @@ from .models import (
 from ..request_options import RequestOptions
 from .base import VectorClientBase
 
+if TYPE_CHECKING:
+    from .client import VikingVector
+
 
 class CollectionClient(VectorClientBase):
     """Client for collection-scoped VikingDB data operations."""
 
-    def __init__(self, transport, meta: CollectionMeta) -> None:
-        super().__init__(transport)
+    def __init__(self, service: "VikingVector", meta: CollectionMeta) -> None:
+        super().__init__(service)
         self._meta = meta
         self._meta_payload = meta.model_dump(by_alias=True, exclude_none=True)
 
@@ -39,7 +48,7 @@ class CollectionClient(VectorClientBase):
         response = cast(
             UpsertDataResponse,
             self._post(
-                "/api/vikingdb/data/upsert",
+                API_VECTOR_DATA_UPSERT,
                 payload,
                 UpsertDataResponse,
                 request_options=request_options,
@@ -57,7 +66,7 @@ class CollectionClient(VectorClientBase):
         response = cast(
             UpdateDataResponse,
             self._post(
-                "/api/vikingdb/data/update",
+                API_VECTOR_DATA_UPDATE,
                 payload,
                 UpdateDataResponse,
                 request_options=request_options,
@@ -75,7 +84,7 @@ class CollectionClient(VectorClientBase):
         response = cast(
             DeleteDataResponse,
             self._post(
-                "/api/vikingdb/data/delete",
+                API_VECTOR_DATA_DELETE,
                 payload,
                 DeleteDataResponse,
                 request_options=request_options,
@@ -93,7 +102,7 @@ class CollectionClient(VectorClientBase):
         response = cast(
             FetchDataInCollectionResponse,
             self._post(
-                "/api/vikingdb/data/fetch_in_collection",
+                API_VECTOR_DATA_FETCH_IN_COLLECTION,
                 payload,
                 FetchDataInCollectionResponse,
                 request_options=request_options,

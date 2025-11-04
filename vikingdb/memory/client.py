@@ -4,18 +4,13 @@
 from __future__ import annotations
 
 import json
-from typing import List
-
-import aiohttp
 
 from volcengine.ApiInfo import ApiInfo
-from volcengine.ServiceInfo import ServiceInfo
-from volcengine.base.Service import Service
 
-from .auth import create_auth_provider
-from .types import EnumEncoder
-from .exceptions import EXCEPTION_MAP, VikingMemException
+from .._client import Client
+from ..auth import Auth
 from .collection import Collection
+from .exceptions import EXCEPTION_MAP, VikingMemException
 
 
 def _get_common_viking_request_header():
@@ -27,21 +22,19 @@ def _get_common_viking_request_header():
     return common_header
 
 
-class VikingMemClient(Service):
+class VikingMem(Client):
     """Viking Memory Service Main Service Class"""
 
     def __init__(
         self,
-        host="api-knowledgebase.mlp.cn-beijing.volces.com",
-        region="cn-beijing",
-        ak="",
-        sk="",
-        api_key=None,
-        auth_provider=None,
-        sts_token="",
-        scheme="http",
-        connection_timeout=30,
-        socket_timeout=30,
+        *,
+        host: str = "api-knowledgebase.mlp.cn-beijing.volces.com",
+        region: str = "cn-beijing",
+        auth: Auth,
+        sts_token: str = "",
+        scheme: str = "http",
+        connection_timeout: int = 30,
+        socket_timeout: int = 30,
     ):
         """
         Initialize Viking Memory Service
@@ -49,10 +42,7 @@ class VikingMemClient(Service):
         Args:
             host: API host address
             region: Region
-            ak: Access Key (used with sk, required for AK/SK authentication)
-            sk: Secret Key (used with ak, required for AK/SK authentication)
-            api_key: API Key (required for API Key authentication, adds api-key field in request headers)
-            auth_provider: Custom authentication provider (optional, takes precedence if provided)
+            auth: Authentication provider (e.g. IAM or APIKey)
             sts_token: STS Token (optional)
             scheme: Request protocol (http or https)
             connection_timeout: Connection timeout in seconds
@@ -60,31 +50,23 @@ class VikingMemClient(Service):
             
         Note:
             Authentication methods:
-            - AK/SK authentication: Provide ak and sk parameters
-            - API Key authentication: Provide api_key parameter
-            - Custom authentication: Provide auth_provider parameter
+            - IAM authentication: ``auth=IAM(ak=\"<AK>\", sk=\"<SK>\")``
+            - API Key authentication: ``auth=APIKey(api_key=\"<API_KEY>\")``
         """
-        # Create or use authentication provider
-        if auth_provider is None:
-            auth_provider = create_auth_provider(ak=ak, sk=sk, api_key=api_key, region=region)
-        
-        self.auth_provider = auth_provider
-        
-        # Get credentials (for ServiceInfo)
-        credentials = auth_provider.get_credentials()
-        
-        self.service_info = VikingMemClient.get_service_info(
-            host, credentials, scheme, connection_timeout, socket_timeout
+        super().__init__(
+            host=host,
+            region=region,
+            service="air",
+            auth=auth,
+            sts_token=sts_token,
+            scheme=scheme,
+            connection_timeout=connection_timeout,
+            socket_timeout=socket_timeout,
         )
-        self.api_info = VikingMemClient.get_api_info()
-        super(VikingMemClient, self).__init__(self.service_info, self.api_info)
-
-        if sts_token:
-            self.set_session_token(session_token=sts_token)
 
     def ping(self):
         """
-        Test if authentication credentials (AK/SK or API Key) are correct
+        Test if authentication credentials (IAM or API Key) are correct
         
         This method sends a ping request to verify:
         - Network connectivity to the service
@@ -105,47 +87,10 @@ class VikingMemClient(Service):
             raise VikingMemException(
                 1000028, 
                 "missed", 
-                "Authentication failed or service unreachable. Please check your AK/SK or API Key: {}".format(str(e))
+                "Authentication failed or service unreachable. Please check your IAM or API Key credentials: {}".format(str(e))
             ) from None
 
-
-    def prepare_request(self, api_info, params, doseq=0):
-        """
-        Override prepare_request method to use standard volcengine signature process
-        
-        Does not add extra Host, User-Agent headers to keep signature simple
-        """
-        from volcengine.base.Request import Request
-        
-        r = Request()
-        r.set_shema(self.service_info.scheme)
-        r.set_method(api_info.method)
-        r.set_host(self.service_info.host)
-        r.set_path(api_info.path)
-        r.set_connection_timeout(self.service_info.connection_timeout)
-        r.set_socket_timeout(self.service_info.socket_timeout)
-        r.set_headers(dict(api_info.header))
-        
-        if params:
-            r.set_query(params)
-        
-        return r
-
-    @staticmethod
-    def get_service_info(host, credentials, scheme, connection_timeout, socket_timeout):
-        """Get service information"""
-        service_info = ServiceInfo(
-            host,
-            {},
-            credentials,
-            connection_timeout,
-            socket_timeout,
-            scheme=scheme,
-        )
-        return service_info
-
-    @staticmethod
-    def get_api_info():
+    def _build_api_info(self):
         """Get API information"""
         api_info = {
             # Profile APIs
@@ -234,33 +179,6 @@ class VikingMemClient(Service):
         }
         return api_info
 
-    async def async_json(self, api, params, body, headers=None):
-        """Send JSON request asynchronously"""
-        if not (api in self.api_info):
-            raise Exception("no such api")
-        api_info = self.api_info[api]
-        r = self.prepare_request(api_info, params)
-        if headers:
-            for key in headers:
-                r.headers[key] = headers[key]
-        r.headers["Content-Type"] = "application/json"
-        r.body = body
-
-        self.auth_provider.sign_request(r)
-        timeout = aiohttp.ClientTimeout(
-            connect=self.service_info.connection_timeout,
-            sock_connect=self.service_info.socket_timeout,
-        )
-        url = r.build()
-        async with aiohttp.request(
-            "POST", url, headers=r.headers, data=r.body, timeout=timeout
-        ) as r:
-            resp = await r.text(encoding="utf-8")
-            if r.status == 200:
-                return resp
-            else:
-                raise Exception(resp)
-
     def json_exception(self, api, params, body, headers=None):
         """Send JSON request with exception handling"""
         try:
@@ -300,32 +218,6 @@ class VikingMemClient(Service):
             ) from None
         return res
 
-    def _json(self, api, params, body, headers=None):
-        """Internal JSON request method"""
-        if not (api in self.api_info):
-            raise Exception("no such api")
-        api_info = self.api_info[api]
-        r = self.prepare_request(api_info, params)
-        if headers:
-            for key in headers:
-                r.headers[key] = headers[key]
-        r.headers["Content-Type"] = "application/json"
-        r.body = body
-        self.auth_provider.sign_request(r)
-        url = r.build()
-        resp = self.session.post(
-            url,
-            headers=r.headers,
-            data=r.body,
-            timeout=(
-                self.service_info.connection_timeout,
-                self.service_info.socket_timeout,
-            ),
-        )
-        if resp.status_code == 200:
-            return json.dumps(resp.json())
-        else:
-            raise Exception(resp.text.encode("utf-8"))
 
     async def async_json_exception(self, api, params, body, headers=None):
         """Send JSON request asynchronously with exception handling"""

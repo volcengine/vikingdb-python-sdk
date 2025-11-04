@@ -3,35 +3,32 @@
 
 from __future__ import annotations
 
-from typing import Any, Mapping, Optional, Type, Union
+from typing import TYPE_CHECKING, Any, Mapping, Optional, Type, Union
 
 from pydantic import BaseModel
 
 from ..exceptions import VikingDBError
 from ..request_options import RequestOptions
-from ..transport import Transport
+
+if TYPE_CHECKING:
+    from .client import VikingVector
 
 
 class VectorClientBase:
     """Shared helper for all Vector clients."""
 
-    def __init__(self, transport: Transport) -> None:
-        self._transport = transport
+    def __init__(self, service: "VikingVector") -> None:
+        self._service = service
 
     def _post(
         self,
-        path: str,
+        api: str,
         payload: Mapping[str, Any],
         response_model: Type[BaseModel],
         *,
         request_options: Optional[RequestOptions] = None,
     ) -> BaseModel:
-        response_payload = self._transport.request(
-            "POST",
-            path,
-            json_body=payload,
-            options=request_options,
-        )
+        response_payload = self._service.request(api, payload, options=request_options)
         return response_model.model_validate(response_payload)
 
     @staticmethod

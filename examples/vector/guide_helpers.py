@@ -22,13 +22,11 @@ from vikingdb.vector import (
     IndexClient,
     SearchByKeywordsRequest,
     SearchByMultiModalRequest,
-    VikingDB,
+    VikingVector,
 )
 
 # Pinned dataset configuration for the public guide walkthroughs.
 DEFAULT_REGION = "ap-southeast-1"
-DEFAULT_HOST = "api-vikingdb.vikingdb.ap-southeast-1.volces.com"
-DEFAULT_ENDPOINT = f"https://{DEFAULT_HOST}"
 EMBEDDING_MODEL_NAME = "bge-m3"  # dense embedding model (dim=1024) used by the guides
 # --- require embedding ---------------------------------------------
 TEXT_COLLECTION = "text"
@@ -66,7 +64,8 @@ def require_env_vars(*names: str) -> Dict[str, str]:
 
 @dataclass
 class EnvConfig:
-    endpoint: str
+    host: str
+    scheme: str
     region: str
     access_key: str
     secret_key: str
@@ -85,12 +84,13 @@ class Clients:
 
 def load_config(*, collection: str = TEXT_COLLECTION, index: str = TEXT_INDEX) -> EnvConfig:
     """
-    Expect the environment (or .env) to expose only AK/SK; collection/index/region/host
-    are pinned in-code so the guides target the documented datasets.
+    Expect the environment (or .env) to expose AK/SK plus the VikingDB host. Region
+    defaults to the public walkthrough dataset when omitted.
 
     Required:
         VIKINGDB_AK=...
         VIKINGDB_SK=...
+        VIKINGDB_HOST=...
 
     Override ``collection``/``index`` when a guide needs a different dataset
     (for example, the vector walkthrough points to the "vector" collection and
@@ -106,12 +106,15 @@ def load_config(*, collection: str = TEXT_COLLECTION, index: str = TEXT_INDEX) -
     project = os.getenv("VIKINGDB_PROJECT") or None
     resource_id = os.getenv("VIKINGDB_RESOURCE_ID") or None
 
-    host = os.getenv("VIKINGDB_HOST", DEFAULT_HOST)
-    endpoint = os.getenv("VIKINGDB_ENDPOINT") or f"https://{host}"
+    host = os.getenv("VIKINGDB_HOST")
+    if not host:
+        pytest.skip("Missing required environment variable: VIKINGDB_HOST")
+    scheme = os.getenv("VIKINGDB_SCHEME", "https")
     region = os.getenv("VIKINGDB_REGION", DEFAULT_REGION)
 
     return EnvConfig(
-        endpoint=endpoint,
+        host=host,
+        scheme=scheme,
         region=region,
         access_key=access_key,
         secret_key=secret_key,
@@ -123,12 +126,15 @@ def load_config(*, collection: str = TEXT_COLLECTION, index: str = TEXT_INDEX) -
 
 
 def build_clients(config: EnvConfig) -> Clients:
-    client = VikingDB(
-        endpoint=config.endpoint,
+    auth = IAM(ak=config.access_key, sk=config.secret_key)
+    client = VikingVector(
+        host=config.host,
         region=config.region,
-        timeout=30.0,
+        scheme=config.scheme,
+        auth=auth,
+        connection_timeout=30,
+        socket_timeout=30,
         user_agent="vikingdb-python-sdk-guide",
-        auth=IAM(config.access_key, config.secret_key),
     )
 
     collection_client = client.collection(

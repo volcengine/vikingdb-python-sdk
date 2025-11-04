@@ -14,7 +14,7 @@ import os
 import pytest
 
 from vikingdb import IAM
-from vikingdb.vector import SearchByRandomRequest, VikingDB
+from vikingdb.vector import SearchByRandomRequest, VikingVector
 
 from .guide_helpers import (
     Clients,
@@ -36,12 +36,18 @@ def test_snippet_connectivity() -> None:
         VIKINGDB_COLLECTION=...
         VIKINGDB_INDEX=...
     """
-    client = VikingDB(
-        endpoint=f"https://{os.environ['VIKINGDB_HOST']}",
+    auth = IAM(
+        ak=os.environ["VIKINGDB_AK"],
+        sk=os.environ["VIKINGDB_SK"],
+    )
+    client = VikingVector(
+        host=os.environ["VIKINGDB_HOST"],
         region=os.environ["VIKINGDB_REGION"],
-        timeout=30.0,
+        auth=auth,
+        scheme="https",
+        connection_timeout=30,
+        socket_timeout=30,
         user_agent="vikingdb-python-sdk-guide",
-        auth=IAM(os.environ["VIKINGDB_AK"], os.environ["VIKINGDB_SK"]),
     )
     index_client = client.index(
         collection_name=os.environ["VIKINGDB_COLLECTION"],

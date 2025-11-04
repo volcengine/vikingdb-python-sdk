@@ -7,10 +7,11 @@ Scenario 5 – Embedding Pipelines
 from __future__ import annotations
 
 import os
+
 import pytest
 
 from vikingdb import IAM
-from vikingdb.vector import EmbeddingData, EmbeddingModelOpt, EmbeddingRequest, FullModalData, VikingDB
+from vikingdb.vector import EmbeddingData, EmbeddingModelOpt, EmbeddingRequest, FullModalData, VikingVector
 
 from .guide_helpers import (
     Clients,
@@ -25,12 +26,18 @@ def test_snippet_embedding_multimodal_pipeline() -> None:
     """
     Inline multimodal embedding showcasing dense+sparse configuration.
     """
-    client = VikingDB(
-        endpoint=f"https://{os.environ['VIKINGDB_HOST']}",
+    auth = IAM(
+        ak=os.environ["VIKINGDB_AK"],
+        sk=os.environ["VIKINGDB_SK"],
+    )
+    client = VikingVector(
+        host=os.environ["VIKINGDB_HOST"],
         region=os.environ["VIKINGDB_REGION"],
-        timeout=30.0,
+        auth=auth,
+        scheme="https",
+        connection_timeout=30,
+        socket_timeout=30,
         user_agent="vikingdb-python-sdk-guide",
-        auth=IAM(os.environ["VIKINGDB_AK"], os.environ["VIKINGDB_SK"]),
     )
     embedding_client = client.embedding()
 
@@ -54,12 +61,18 @@ def test_snippet_embedding_ds_pipeline() -> None:
     """
     Inline dense+sparse embedding call mirroring the Go DS snippet.
     """
-    client = VikingDB(
-        endpoint=f"https://{os.environ['VIKINGDB_HOST']}",
+    auth = IAM(
+        ak=os.environ["VIKINGDB_AK"],
+        sk=os.environ["VIKINGDB_SK"],
+    )
+    client = VikingVector(
+        host=os.environ["VIKINGDB_HOST"],
         region=os.environ["VIKINGDB_REGION"],
-        timeout=30.0,
+        auth=auth,
+        scheme="https",
+        connection_timeout=30,
+        socket_timeout=30,
         user_agent="vikingdb-python-sdk-guide",
-        auth=IAM(os.environ["VIKINGDB_AK"], os.environ["VIKINGDB_SK"]),
     )
     embedding_client = client.embedding()
 
