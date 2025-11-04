@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Mapping, Optional, Type, Union
 
 from pydantic import BaseModel
 
-from ..exceptions import VikingDBError
+from .exceptions import VikingVectorException
 from ..request_options import RequestOptions
 
 if TYPE_CHECKING:
@@ -43,7 +43,9 @@ class VectorClientBase:
         elif isinstance(request, Mapping):
             body = {key: value for key, value in request.items() if value is not None}
         else:
-            raise VikingDBError(f"unsupported request type: {type(request)!r}")
+            raise VikingVectorException(
+                f"unsupported request type: {type(request)!r}"
+            )
 
         merged = dict(base)
         merged.update(body)

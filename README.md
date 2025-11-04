@@ -90,7 +90,7 @@ Each scenario writes temporary documents using unique session tags and cleans th
 
 ### Architecture Overview
 
-- `vikingdb._client`, `vikingdb.config`, `vikingdb.auth`, `vikingdb.request_options`, and `vikingdb.exceptions` form the shared runtime used by all present and future SDK domains (vector, memory, knowledge).
+- `vikingdb._client`, `vikingdb.auth`, `vikingdb.request_options`, and `vikingdb.vector.exceptions` form the shared runtime used by all present and future SDK domains (vector, memory, knowledge).
 - Domain-specific features live under dedicated namespaces such as `vikingdb.vector`, where the high-level `VikingVector` client composes the shared auth stack atop the shared client.
 - Vector request/response models now surface directly from `vikingdb.vector` (backed internally by `vikingdb/vector/models`).
 - Imports from the root package now focus on cross-cutting utilities (auth, config, request options), while application code should pull vector functionality from `vikingdb.vector` explicitly.
