@@ -37,7 +37,12 @@ Documentation = "https://github.com/volcengine/volc-vikingdb-python-sdk/README.m
 Source = "https://github.com/volcengine/volc-vikingdb-python-sdk"
 
 [tool.setuptools]
-packages = ["vikingdb", "vikingdb.core", "vikingdb.vector", "vikingdb.memory"]
+packages = ["vikingdb", "vikingdb.vector", "vikingdb.memory"]
 
 [tool.setuptools.dynamic]
 version = {attr = "vikingdb.version.__version__"}
+
+[dependency-groups]
+dev = [
+    "pytest>=7.4.4",
+]
