@@ -51,7 +51,8 @@ class Collection:
         user_id=None, 
         assistant_id=None, 
         group_id=None, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Add an event to the collection
@@ -63,6 +64,7 @@ class Collection:
             assistant_id (str, optional): Assistant ID
             group_id (str, optional): Group ID
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Event information
@@ -84,7 +86,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("AddEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = self.client.json_exception("AddEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     async def async_add_event(
@@ -94,7 +96,8 @@ class Collection:
         user_id=None, 
         assistant_id=None, 
         group_id=None, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Add an event to the collection asynchronously
@@ -106,6 +109,7 @@ class Collection:
             assistant_id (str, optional): Assistant ID
             group_id (str, optional): Group ID
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Event information
@@ -127,7 +131,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("AddEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = await self.client.async_json_exception("AddEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     def update_event(
@@ -136,7 +140,8 @@ class Collection:
         memory_info, 
         user_id=None, 
         assistant_id=None, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Update an existing event
@@ -147,6 +152,7 @@ class Collection:
             user_id (str, optional): User ID
             assistant_id (str, optional): Assistant ID
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Updated event information
@@ -166,7 +172,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("UpdateEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = self.client.json_exception("UpdateEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     async def async_update_event(
@@ -175,7 +181,8 @@ class Collection:
         memory_info, 
         user_id=None, 
         assistant_id=None, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Update an existing event asynchronously
@@ -186,6 +193,7 @@ class Collection:
             user_id (str, optional): User ID
             assistant_id (str, optional): Assistant ID
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Updated event information
@@ -205,13 +213,14 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("UpdateEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = await self.client.async_json_exception("UpdateEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     def delete_event(
         self, 
         event_id, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Delete an event by ID
@@ -219,6 +228,7 @@ class Collection:
         Args:
             event_id (str): Event ID to delete
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Deletion result
@@ -233,13 +243,14 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("DeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = self.client.json_exception("DeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     async def async_delete_event(
         self, 
         event_id, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Delete an event by ID asynchronously
@@ -247,6 +258,7 @@ class Collection:
         Args:
             event_id (str): Event ID to delete
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Deletion result
@@ -261,14 +273,15 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("DeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = await self.client.async_json_exception("DeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     def batch_delete_event(
         self, 
         filter=None,
         delete_type=None,
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Batch delete events based on filter criteria
@@ -277,6 +290,7 @@ class Collection:
             filter (dict, optional): Filter parameters. May contain event_type, user_id, assistant_id, start_time, end_time
             delete_type (str, optional): Delete type
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Batch deletion result
@@ -293,14 +307,15 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("BatchDeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = self.client.json_exception("BatchDeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     async def async_batch_delete_event(
         self, 
         filter=None,
         delete_type=None,
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Batch delete events based on filter criteria asynchronously
@@ -309,6 +324,7 @@ class Collection:
             filter (dict, optional): Filter parameters. May contain event_type, user_id, assistant_id, start_time, end_time
             delete_type (str, optional): Delete type
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Batch deletion result
@@ -325,7 +341,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("BatchDeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = await self.client.async_json_exception("BatchDeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     # ==================== Profile Operations ====================
     
@@ -337,7 +353,8 @@ class Collection:
         assistant_id=None, 
         group_id=None, 
         is_upsert=False, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Add a profile to the collection
@@ -350,6 +367,7 @@ class Collection:
             group_id (str, optional): Group ID
             is_upsert (bool, optional): Whether to upsert (insert or update). Defaults to False.
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Profile information
@@ -372,7 +390,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("AddProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = self.client.json_exception("AddProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     async def async_add_profile(
@@ -383,7 +401,8 @@ class Collection:
         assistant_id=None, 
         group_id=None, 
         is_upsert=False, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Add a profile to the collection asynchronously
@@ -396,6 +415,7 @@ class Collection:
             group_id (str, optional): Group ID
             is_upsert (bool, optional): Whether to upsert (insert or update). Defaults to False.
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Profile information
@@ -418,14 +438,15 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("AddProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = await self.client.async_json_exception("AddProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     def update_profile(
         self, 
         profile_id, 
         memory_info, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Update an existing profile
@@ -434,6 +455,7 @@ class Collection:
             profile_id (str): Profile ID to update
             memory_info (dict): Updated memory information
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Updated profile information
@@ -449,14 +471,15 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("UpdateProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = self.client.json_exception("UpdateProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     async def async_update_profile(
         self, 
         profile_id, 
         memory_info, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Update an existing profile asynchronously
@@ -465,6 +488,7 @@ class Collection:
             profile_id (str): Profile ID to update
             memory_info (dict): Updated memory information
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Updated profile information
@@ -480,13 +504,14 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("UpdateProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = await self.client.async_json_exception("UpdateProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
 
     def delete_profile(
         self, 
         profile_id, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Delete a profile by ID
@@ -494,6 +519,7 @@ class Collection:
         Args:
             profile_id (str): Profile ID to delete
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Deletion result
@@ -508,13 +534,14 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("DeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = self.client.json_exception("DeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     async def async_delete_profile(
         self, 
         profile_id, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Delete a profile by ID asynchronously
@@ -522,6 +549,7 @@ class Collection:
         Args:
             profile_id (str): Profile ID to delete
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Deletion result
@@ -536,13 +564,14 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("DeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = await self.client.async_json_exception("DeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     def batch_delete_profile(
         self, 
         filter=None,
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Batch delete profiles based on filter criteria
@@ -550,6 +579,7 @@ class Collection:
         Args:
             filter (dict, optional): Filter parameters. May contain profile_type, user_id, assistant_id
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Batch deletion result
@@ -564,13 +594,14 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("BatchDeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = self.client.json_exception("BatchDeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     async def async_batch_delete_profile(
         self, 
         filter=None,
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Batch delete profiles based on filter criteria asynchronously
@@ -578,6 +609,7 @@ class Collection:
         Args:
             filter (dict, optional): Filter parameters. May contain profile_type, user_id, assistant_id
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Batch deletion result
@@ -592,7 +624,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("BatchDeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = await self.client.async_json_exception("BatchDeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     # ==================== Session Operations ====================
     
@@ -602,7 +634,8 @@ class Collection:
         messages, 
         metadata=None, 
         profiles=None,
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Add session messages to the collection
@@ -613,6 +646,7 @@ class Collection:
             metadata (dict, optional): Session metadata
             profiles (list, optional): List of profiles
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Session information
@@ -632,7 +666,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("AddSession", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = self.client.json_exception("AddSession", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     async def async_add_session(
@@ -641,7 +675,8 @@ class Collection:
         messages, 
         metadata=None, 
         profiles=None,
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Add session messages to the collection asynchronously
@@ -652,6 +687,7 @@ class Collection:
             metadata (dict, optional): Session metadata
             profiles (list, optional): List of profiles
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Session information
@@ -671,7 +707,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("AddSession", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = await self.client.async_json_exception("AddSession", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     # ==================== Session Info Operations ====================
@@ -679,7 +715,8 @@ class Collection:
     def get_session_info(
         self,
         session_id,
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Get session information by session ID
@@ -687,6 +724,7 @@ class Collection:
         Args:
             session_id (str): Session ID to retrieve
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Session information
@@ -701,13 +739,14 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("GetSessionInfo", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = self.client.json_exception("GetSessionInfo", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     async def async_get_session_info(
         self,
         session_id,
-        headers=None
+        headers=None,
+        timeout=None
     ):  
         """
         Get session information by session ID asynchronously
@@ -715,6 +754,7 @@ class Collection:
         Args:
             session_id (str): Session ID to retrieve
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Session information
@@ -729,7 +769,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("GetSessionInfo", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = await self.client.async_json_exception("GetSessionInfo", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     # ==================== Search Operations ====================
@@ -739,7 +779,8 @@ class Collection:
         query=None, 
         filter=None, 
         limit=None, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Search memories in the collection
@@ -749,6 +790,7 @@ class Collection:
             filter (dict, optional): Filter parameters to narrow down results
             limit (int, optional): Maximum number of results to return
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Search results containing memory information
@@ -767,7 +809,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("SearchMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = self.client.json_exception("SearchMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     async def async_search_memory(
@@ -775,7 +817,8 @@ class Collection:
         query=None, 
         filter=None, 
         limit=None, 
-        headers=None
+        headers=None,
+        timeout=None
     ):
         """
         Search memories in the collection asynchronously
@@ -785,6 +828,7 @@ class Collection:
             filter (dict, optional): Filter parameters to narrow down results
             limit (int, optional): Maximum number of results to return
             headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
             
         Returns:
             dict: Search results containing memory information
@@ -803,7 +847,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("SearchMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers)
+        res = await self.client.async_json_exception("SearchMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     

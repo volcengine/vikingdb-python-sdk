@@ -14,13 +14,15 @@ from .._client import Client
 from ..auth import Auth
 from .collection import Collection
 from .exceptions import EXCEPTION_MAP, VikingMemException
-
+from ..version import __version__
+_DEFAULT_USER_AGENT = f"vikingdb-python-sdk/{__version__}"
 
 def _get_common_viking_request_header():
     """Get common request headers"""
     common_header = {
         "Accept": "application/json",
         "Content-Type": "application/json",
+        "User-Agent": _DEFAULT_USER_AGENT,
     }
     return common_header
 
@@ -182,10 +184,18 @@ class VikingMem(Client):
         }
         return api_info
 
-    def json_exception(self, api, params, body, headers=None):
-        """Send JSON request with exception handling"""
+    def json_exception(self, api, params, body, headers=None, timeout=None):
+        """Send JSON request with exception handling
+        
+        Args:
+            api: API name
+            params: Query parameters
+            body: Request body
+            headers: Additional headers (optional)
+            timeout: Timeout in seconds (optional). If not provided, uses default timeout.
+        """
         try:
-            res = self._json(api, params, body, headers=headers)
+            res = self._json(api, params, body, headers=headers, timeout=timeout)
         except Exception as e:
             try:
                 err_msg = (
@@ -222,10 +232,18 @@ class VikingMem(Client):
         return res
 
 
-    async def async_json_exception(self, api, params, body, headers=None):
-        """Send JSON request asynchronously with exception handling"""
+    async def async_json_exception(self, api, params, body, headers=None, timeout=None):
+        """Send JSON request asynchronously with exception handling
+        
+        Args:
+            api: API name
+            params: Query parameters
+            body: Request body
+            headers: Additional headers (optional)
+            timeout: Timeout in seconds (optional). If not provided, uses default timeout.
+        """
         try:
-            res = await self.async_json(api, params, body, headers=headers)
+            res = await self.async_json(api, params, body, headers=headers, timeout=timeout)
         except Exception as e:
             try:
                 err_msg = (
