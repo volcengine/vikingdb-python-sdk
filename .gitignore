@@ -9,3 +9,5 @@ venv
 
 AGENTS.md
 .env
+
+dist/
