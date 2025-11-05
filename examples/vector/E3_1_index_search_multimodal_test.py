@@ -16,7 +16,6 @@ from vikingdb.vector import SearchByMultiModalRequest, UpsertDataRequest, Viking
 
 from .guide_helpers import (
     Clients,
-    assign_chapter_ids_via_search,
     bool_and_filters,
     build_clients,
     build_request_options,
