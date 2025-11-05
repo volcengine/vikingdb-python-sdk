@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, Mapping, MutableMapping, Optional
+from typing import MutableMapping, Optional
 
 
 @dataclass
@@ -17,24 +17,17 @@ class RequestOptions:
         query: Additional query parameters appended to the request URL.
         request_id: Optional request identifier propagated via X-Tt-Logid.
         max_attempts: Override for retry attempts (defaults to client configuration).
+        timeout: Override for the response read timeout (seconds).
     """
 
     headers: MutableMapping[str, str] = field(default_factory=dict)
     query: MutableMapping[str, str] = field(default_factory=dict)
     request_id: Optional[str] = None
     max_attempts: Optional[int] = None
-
-    def merge_headers(self, extra: Mapping[str, str]) -> None:
-        for key, value in extra.items():
-            self.headers[key] = value
-
-    def merge_query(self, extra: Mapping[str, str]) -> None:
-        for key, value in extra.items():
-            self.query[key] = value
+    timeout: Optional[int] = None
 
 
 def ensure_request_options(
     options: Optional[RequestOptions],
 ) -> RequestOptions:
     return options if options is not None else RequestOptions()
-

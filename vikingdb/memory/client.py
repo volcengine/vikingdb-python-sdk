@@ -38,8 +38,7 @@ class VikingMem(Client):
         auth: Auth,
         sts_token: str = "",
         scheme: str = "http",
-        connection_timeout: int = 30,
-        socket_timeout: int = 30,
+        timeout: int = 30,
     ):
         """
         Initialize Viking Memory Service
@@ -50,8 +49,7 @@ class VikingMem(Client):
             auth: Authentication provider (e.g. IAM or APIKey)
             sts_token: STS Token (optional)
             scheme: Request protocol (http or https)
-            connection_timeout: Connection timeout in seconds
-            socket_timeout: Socket timeout in seconds
+            timeout: Timeout in seconds applied to connection and read operations
             
         Note:
             Authentication methods:
@@ -65,8 +63,7 @@ class VikingMem(Client):
             auth=auth,
             sts_token=sts_token,
             scheme=scheme,
-            connection_timeout=connection_timeout,
-            socket_timeout=socket_timeout,
+            timeout=timeout,
         )
 
     def ping(self):

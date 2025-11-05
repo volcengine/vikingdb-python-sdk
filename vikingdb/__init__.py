@@ -12,8 +12,6 @@ from .vector import (
     IndexClient,
     VikingVector,
 )
-from .vector.exceptions import VikingVectorException
-
 __all__ = [
     "IAM",
     "APIKey",
@@ -22,6 +20,5 @@ __all__ = [
     "IndexClient",
     "RequestOptions",
     "VikingVector",
-    "VikingVectorException",
     "vector",
 ]

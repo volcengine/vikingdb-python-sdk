@@ -132,9 +132,7 @@ def build_clients(config: EnvConfig) -> Clients:
         region=config.region,
         scheme=config.scheme,
         auth=auth,
-        connection_timeout=30,
-        socket_timeout=30,
-        user_agent="vikingdb-python-sdk-guide",
+        timeout=30,
     )
 
     collection_client = client.collection(
