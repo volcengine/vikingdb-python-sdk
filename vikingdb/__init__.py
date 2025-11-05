@@ -6,11 +6,16 @@ from __future__ import annotations
 from .auth import APIKey, IAM
 from .request_options import RequestOptions
 from . import vector
+from . import memory
 from .vector import (
     CollectionClient,
     EmbeddingClient,
     IndexClient,
     VikingVector,
+)
+from .memory import (
+    VikingMem,
+    Collection,
 )
 __all__ = [
     "IAM",
@@ -21,4 +26,7 @@ __all__ = [
     "RequestOptions",
     "VikingVector",
     "vector",
+    "memory",
+    "VikingMem",
+    "Collection",
 ]

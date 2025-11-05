@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vikingdb"
+name = "vikingdb-python-sdk"
 dynamic = ["version"]
 description = "vikingdb Python SDK"
 readme = "README.md"
