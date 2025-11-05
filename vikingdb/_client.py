@@ -81,7 +81,7 @@ class Client(Service, ABC):
     def prepare_request(self, api_info: ApiInfo, params: Optional[Mapping[str, Any]], doseq: int = 0):
         """Prepare a volcengine request without adding implicit headers."""
         request = Request()
-        request.set_shema(self.service_info.scheme)
+        request.set_schema(self.service_info.scheme)
         request.set_method(api_info.method)
         request.set_host(self.service_info.host)
         request.set_path(api_info.path)

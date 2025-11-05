@@ -90,7 +90,7 @@ def test_v_snippet_index_search_vector() -> None:
         payload.append({**chapter, "vector": vector})
     collection_client.upsert(UpsertDataRequest(data=payload))
 
-    time.sleep(3)
+    time.sleep(2)
 
     query_req = EmbeddingRequest(
         data=[{"text": "Show me the chapter that demonstrates embedding reuse for query vectors."}],
@@ -144,7 +144,7 @@ def test_scenario_index_search_vector(vector_clients: Clients) -> None:
             )
         vector_clients.collection.upsert(UpsertDataRequest(data=payload), request_options=request_options)
 
-        time.sleep(3)
+        time.sleep(2)
 
         retrieval = next(ch for ch in chapters if ch.key == "retrieval-lab")
         query_vector = embed_dense_vectors(

@@ -7,6 +7,10 @@ from typing import Optional, Union
 
 from ..exceptions import VikingException
 
+class VikingConnectionException(Exception):
+    def __init__(self, msg: str, cause: str) -> None:
+        super().__init__(msg, cause)
+        
 
 class VikingVectorException(VikingException):
     """Raised when the remote VikingDB service returns an error payload."""
