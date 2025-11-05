@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 from abc import ABC, abstractmethod
+from json import JSONDecodeError
 from typing import Any, Mapping, Optional
 
 import aiohttp
@@ -17,6 +18,13 @@ from volcengine.base.Request import Request
 from volcengine.base.Service import Service
 
 from .auth import Auth
+from .exceptions import (
+    DEFAULT_UNKNOWN_ERROR_CODE,
+    VikingAPIException,
+)
+
+
+_REQUEST_ID_HEADER = "X-Tt-Logid"
 
 
 class Client(Service, ABC):
@@ -113,6 +121,9 @@ class Client(Service, ABC):
         self.auth_provider.sign_request(request)
         url = request.build()
         
+        request_id_value = request.headers.get(_REQUEST_ID_HEADER)
+        request_id = str(request_id_value) if request_id_value else "unknown"
+        
         # Use custom timeout if provided, otherwise use default
         if timeout is not None:
             request_timeout = (timeout, timeout)
@@ -122,15 +133,49 @@ class Client(Service, ABC):
                 self.service_info.socket_timeout,
             )
         
-        response = self.session.post(
-            url,
-            headers=request.headers,
-            data=request.body,
-            timeout=request_timeout,
-        )
-        if response.status_code == 200:
+        try:
+            response = self.session.post(
+                url,
+                headers=request.headers,
+                data=request.body,
+                timeout=request_timeout,
+            )
+        except Exception as exc:
+            raise VikingAPIException(
+                    DEFAULT_UNKNOWN_ERROR_CODE,
+                    request_id=request_id,
+                    message=f"failed to run session.post {api}: {exc}",
+                ) from exc
+
+        payload_text_attr = getattr(response, "text", "")
+        payload_text = payload_text_attr if isinstance(payload_text_attr, str) else ""
+        payload_text = payload_text or ""
+
+        if response.status_code != 200:
+            error = VikingAPIException.from_response(
+                payload_text,
+                request_id=request_id,
+                status_code=response.status_code,
+            )
+            raise error
+
+        try:
             return response.json()
-        raise Exception(response.text.encode("utf-8"))
+        except (ValueError, JSONDecodeError) as exc:
+            raise VikingAPIException(
+                DEFAULT_UNKNOWN_ERROR_CODE,
+                request_id=request_id,
+                message=f"failed to decode JSON response for {api}: {exc}",
+                status_code=response.status_code,
+            ) from exc
+
+        except Exception as exc:  # pragma: no cover - defensive fallback
+            raise VikingAPIException(
+                DEFAULT_UNKNOWN_ERROR_CODE,
+                request_id=request_id,
+                message=f"unexpected error parsing response for {api}: {exc}",
+                status_code=response.status_code,
+            ) from exc
 
     async def async_json(
         self,
@@ -175,14 +220,36 @@ class Client(Service, ABC):
             )
         
         url = request.build()
-        async with aiohttp.request(
-            "POST",
-            url,
-            headers=request.headers,
-            data=request.body,
-            timeout=client_timeout,
-        ) as response:
-            payload = await response.text(encoding="utf-8")
-            if response.status == 200:
-                return json.loads(payload)
-            raise Exception(payload)
+        try:
+            async with aiohttp.request(
+                "POST",
+                url,
+                headers=request.headers,
+                data=request.body,
+                timeout=client_timeout,
+            ) as response:
+                request_id_value = response.headers.get(_REQUEST_ID_HEADER)
+                request_id = str(request_id_value) if request_id_value else "unknown"
+                payload = await response.text(encoding="utf-8")
+                if response.status != 200:
+                    error = VikingAPIException.from_response(
+                        payload,
+                        request_id=request_id,
+                        status_code=response.status,
+                    )
+                    raise error
+                try:
+                    return json.loads(payload)
+                except JSONDecodeError as exc:
+                    raise VikingAPIException(
+                        DEFAULT_UNKNOWN_ERROR_CODE,
+                        request_id=request_id,
+                        message=f"failed to decode JSON response for {api}: {exc}",
+                        status_code=response.status,
+                    ) from exc
+        except Exception as exc:
+            raise VikingAPIException(
+                    DEFAULT_UNKNOWN_ERROR_CODE,
+                    request_id=request_id,
+                    message=f"failed to run aiohttp {api}: {exc}",
+                ) from exc

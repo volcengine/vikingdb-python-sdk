@@ -13,7 +13,6 @@ from .client import (
 )
 from .models import (
     CollectionMeta,
-    DataApiResponse,
     DeleteDataRequest,
     DeleteDataResponse,
     FetchDataInCollectionRequest,
