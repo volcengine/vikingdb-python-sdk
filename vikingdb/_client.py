@@ -93,8 +93,17 @@ class Client(Service, ABC):
         params: Optional[Mapping[str, Any]],
         body: Any,
         headers: Optional[Mapping[str, str]] = None,
+        timeout: Optional[int] = None,
     ) -> Any:
-        """Send a JSON request synchronously."""
+        """Send a JSON request synchronously.
+        
+        Args:
+            api: API name
+            params: Query parameters
+            body: Request body
+            headers: Additional headers
+            timeout: Timeout in seconds (optional). If not provided, uses default connection_timeout and socket_timeout.
+        """
         if api not in self.api_info:
             raise Exception("no such api")
         api_info = self.api_info[api]
@@ -106,14 +115,21 @@ class Client(Service, ABC):
         request.body = body
         self.auth_provider.sign_request(request)
         url = request.build()
+        
+        # Use custom timeout if provided, otherwise use default
+        if timeout is not None:
+            request_timeout = (timeout, timeout)
+        else:
+            request_timeout = (
+                self.service_info.connection_timeout,
+                self.service_info.socket_timeout,
+            )
+        
         response = self.session.post(
             url,
             headers=request.headers,
             data=request.body,
-            timeout=(
-                self.service_info.connection_timeout,
-                self.service_info.socket_timeout,
-            ),
+            timeout=request_timeout,
         )
         if response.status_code == 200:
             return response.json()
@@ -125,8 +141,17 @@ class Client(Service, ABC):
         params: Optional[Mapping[str, Any]],
         body: Any,
         headers: Optional[Mapping[str, str]] = None,
+        timeout: Optional[int] = None,
     ) -> Any:
-        """Send a JSON request asynchronously."""
+        """Send a JSON request asynchronously.
+        
+        Args:
+            api: API name
+            params: Query parameters
+            body: Request body
+            headers: Additional headers
+            timeout: Timeout in seconds (optional). If not provided, uses default connection_timeout and socket_timeout.
+        """
         if api not in self.api_info:
             raise Exception("no such api")
         api_info = self.api_info[api]
@@ -138,17 +163,26 @@ class Client(Service, ABC):
         request.body = body
 
         self.auth_provider.sign_request(request)
-        timeout = aiohttp.ClientTimeout(
-            connect=self.service_info.connection_timeout,
-            sock_connect=self.service_info.socket_timeout,
-        )
+        
+        # Use custom timeout if provided, otherwise use default
+        if timeout is not None:
+            client_timeout = aiohttp.ClientTimeout(
+                connect=timeout,
+                sock_connect=timeout,
+            )
+        else:
+            client_timeout = aiohttp.ClientTimeout(
+                connect=self.service_info.connection_timeout,
+                sock_connect=self.service_info.socket_timeout,
+            )
+        
         url = request.build()
         async with aiohttp.request(
             "POST",
             url,
             headers=request.headers,
             data=request.body,
-            timeout=timeout,
+            timeout=client_timeout,
         ) as response:
             payload = await response.text(encoding="utf-8")
             if response.status == 200:
