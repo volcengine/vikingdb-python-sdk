@@ -93,7 +93,7 @@ class Client(Service, ABC):
         params: Optional[Mapping[str, Any]],
         body: Any,
         headers: Optional[Mapping[str, str]] = None,
-    ) -> str:
+    ) -> Any:
         """Send a JSON request synchronously."""
         if api not in self.api_info:
             raise Exception("no such api")
@@ -116,7 +116,7 @@ class Client(Service, ABC):
             ),
         )
         if response.status_code == 200:
-            return json.dumps(response.json())
+            return response.json()
         raise Exception(response.text.encode("utf-8"))
 
     async def async_json(
@@ -125,7 +125,7 @@ class Client(Service, ABC):
         params: Optional[Mapping[str, Any]],
         body: Any,
         headers: Optional[Mapping[str, str]] = None,
-    ) -> str:
+    ) -> Any:
         """Send a JSON request asynchronously."""
         if api not in self.api_info:
             raise Exception("no such api")
@@ -152,5 +152,5 @@ class Client(Service, ABC):
         ) as response:
             payload = await response.text(encoding="utf-8")
             if response.status == 200:
-                return payload
+                return json.loads(payload)
             raise Exception(payload)

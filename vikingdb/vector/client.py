@@ -127,15 +127,10 @@ class VikingVector(Client):
 
         body = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
         params = dict(request_options.query) if request_options.query else None
-        response_text = self._json(api, params, body, headers=headers)
-        if not response_text:
+        response_data = self._json(api, params, body, headers=headers)
+        if not response_data:
             return {}
-        try:
-            return json.loads(response_text)
-        except json.JSONDecodeError as exc:
-            raise VikingVectorException(
-                f"failed to decode response JSON: {exc}"
-            ) from exc
+        return response_data
 
     def _build_api_info(self):
         header = {"Accept": "application/json"}

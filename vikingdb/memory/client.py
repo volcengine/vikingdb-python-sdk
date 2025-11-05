@@ -213,7 +213,7 @@ class VikingMem(Client):
                 raise VikingMemException(
                     code, request_id, message
                 ) from None
-        if res == "":
+        if res is None:
             raise VikingMemException(
                 1000028,
                 "missed",
@@ -253,7 +253,7 @@ class VikingMem(Client):
                 raise VikingMemException(
                     code, request_id, message
                 ) from None
-        if res == "":
+        if res is None:
             raise VikingMemException(
                 1000028,
                 "missed",
