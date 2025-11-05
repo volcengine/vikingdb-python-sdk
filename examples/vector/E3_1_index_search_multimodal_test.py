@@ -69,7 +69,7 @@ def test_snippet_index_search_multimodal() -> None:
     for payload in chapters:
         collection_client.upsert(UpsertDataRequest(data=[payload]))
 
-    time.sleep(3)
+    time.sleep(2)
 
     filter_map = {"op": "range", "field": "paragraph", "gte": base_paragraph, "lte": base_paragraph + 1}
     search_req = SearchByMultiModalRequest(
@@ -102,7 +102,7 @@ def test_scenario_index_search_multimodal(multimodal_clients: Clients) -> None:
                 request_options=request_options,
             )
 
-        time.sleep(3)
+        time.sleep(2)
 
         filters = bool_and_filters(
             [

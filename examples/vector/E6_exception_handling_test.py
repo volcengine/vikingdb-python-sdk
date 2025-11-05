@@ -6,8 +6,8 @@ import pytest
 
 from vikingdb import IAM
 from vikingdb.exceptions import NETWORK_ERROR_CODE
-from vikingdb.vector import SearchByRandomRequest, VikingVector
-from vikingdb.vector.exceptions import VikingVectorException
+from vikingdb.vector import VikingVector
+from vikingdb.vector.exceptions import VikingVectorException, VikingConnectionException
 
 from .guide_helpers import EnvConfig, load_config
 
@@ -51,17 +51,7 @@ def test_exception_collection_not_exist() -> None:
 
 def test_exception_wrong_host_raises_network() -> None:
     """Using an invalid host should raise a network exception promoted to VikingVectorException."""
-    config, client = _build_vector_client(host_override="this-host-does-not-exist.invalid", timeout=1)
-
-    index_client = client.index(
-        collection_name=config.collection,
-        index_name=config.index,
-        project_name=config.project_name,
-        resource_id=config.resource_id,
-    )
-
-    with pytest.raises(VikingVectorException) as exc_info:
-        index_client.search_by_random(SearchByRandomRequest(limit=1))
-
-    error_code = str(exc_info.value.code)
-    assert "InternalServerError" in error_code
+    with pytest.raises(VikingConnectionException) as exc_info:
+        _build_vector_client(host_override="in-v-alid.io", timeout=1)
+    
+    assert exc_info

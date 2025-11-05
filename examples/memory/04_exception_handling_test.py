@@ -63,4 +63,3 @@ if __name__ == "__main__":
     print("Viking Memory Add Session Messages Example\n")
     
     add_session_exception()
-    

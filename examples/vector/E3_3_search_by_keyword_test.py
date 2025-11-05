@@ -68,7 +68,7 @@ def test_snippet_search_keywords() -> None:
     for doc in documents:
         collection_client.upsert(UpsertDataRequest(data=[doc]))
 
-    time.sleep(3)
+    time.sleep(2)
 
     filter_map = {"op": "range", "field": "paragraph", "gte": base_paragraph, "lt": base_paragraph + len(documents)}
     search_req = SearchByKeywordsRequest(
@@ -90,6 +90,7 @@ def keyword_clients() -> Clients:
 def test_scenario_search_keywords(keyword_clients: Clients) -> None:
     session_tag = new_session_tag("index-extensions")
     request_options = build_request_options(session_tag)
+    request_options.max_attempts = 5
     base_paragraph = int(time.time()) % 1_000_000
     chapters = build_story_chapters(session_tag, base_paragraph)
 
@@ -100,7 +101,7 @@ def test_scenario_search_keywords(keyword_clients: Clients) -> None:
                 request_options=request_options,
             )
 
-        time.sleep(5)
+        time.sleep(2)
 
         filter_map = session_paragraph_bounds(base_paragraph, len(chapters))
         search_req = SearchByKeywordsRequest(

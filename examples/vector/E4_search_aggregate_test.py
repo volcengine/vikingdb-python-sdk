@@ -91,7 +91,7 @@ def test_scenario_search_extensions_and_analytics(aggregate_clients: Clients) ->
                 request_options=request_options,
             )
 
-        time.sleep(3)
+        time.sleep(2)
 
         agg_req = AggRequest(
             field="paragraph",
