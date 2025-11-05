@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING, Any, Mapping, Optional, Type, Union
 
 from pydantic import BaseModel
 
-from .exceptions import VikingVectorException
 from ..request_options import RequestOptions
 
 if TYPE_CHECKING:
@@ -43,7 +42,7 @@ class VectorClientBase:
         elif isinstance(request, Mapping):
             body = {key: value for key, value in request.items() if value is not None}
         else:
-            raise VikingVectorException(
+            raise Exception(
                 f"unsupported request type: {type(request)!r}"
             )
 

@@ -31,8 +31,7 @@ class Client(Service, ABC):
         auth: Auth,
         sts_token: str = "",
         scheme: str = "http",
-        connection_timeout: int = 30,
-        socket_timeout: int = 30,
+        timeout: int = 30,
     ):
         self.region = region
         self.service = service
@@ -42,8 +41,7 @@ class Client(Service, ABC):
             host=host,
             credentials=credentials,
             scheme=scheme,
-            connection_timeout=connection_timeout,
-            socket_timeout=socket_timeout,
+            timeout=timeout,
         )
         self.api_info = self._build_api_info()
         super().__init__(self.service_info, self.api_info)
@@ -61,15 +59,14 @@ class Client(Service, ABC):
         host: str,
         credentials,
         scheme: str,
-        connection_timeout: int,
-        socket_timeout: int,
+        timeout: int,
     ) -> ServiceInfo:
         return ServiceInfo(
             host,
             {},
             credentials,
-            connection_timeout,
-            socket_timeout,
+            timeout,
+            timeout,
             scheme=scheme,
         )
 
@@ -169,6 +166,7 @@ class Client(Service, ABC):
             client_timeout = aiohttp.ClientTimeout(
                 connect=timeout,
                 sock_connect=timeout,
+                sock_read=timeout,
             )
         else:
             client_timeout = aiohttp.ClientTimeout(

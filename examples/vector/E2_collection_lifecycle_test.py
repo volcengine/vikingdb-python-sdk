@@ -54,9 +54,7 @@ def test_snippet_collection_lifecycle() -> None:
         region=os.environ["VIKINGDB_REGION"],
         auth=auth,
         scheme="https",
-        connection_timeout=30,
-        socket_timeout=30,
-        user_agent="vikingdb-python-sdk-guide",
+        timeout=30,
     )
     collection_client = client.collection(collection_name=os.environ["VIKINGDB_COLLECTION"])
     index_client = client.index(

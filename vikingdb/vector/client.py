@@ -4,13 +4,14 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Mapping, Optional
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any, Optional
 
 from volcengine.ApiInfo import ApiInfo
 
 from .._client import Client
 from ..auth import Auth
-from .exceptions import VikingVectorException
+from .exceptions import EXCEPTION_MAP, VikingVectorException
 from ..request_options import RequestOptions, ensure_request_options
 from ..version import __version__
 from .models import CollectionMeta, IndexMeta
@@ -49,14 +50,11 @@ class VikingVector(Client):
         auth: Auth,
         scheme: str = "https",
         sts_token: str = "",
-        connection_timeout: int = 30,
-        socket_timeout: int = 30,
-        user_agent: Optional[str] = None,
+        timeout: int = 30,
     ) -> None:
         if auth is None:
             raise ValueError("auth is required for VikingVector")
 
-        self._user_agent = user_agent or _DEFAULT_USER_AGENT
         super().__init__(
             host=host,
             region=region,
@@ -64,8 +62,7 @@ class VikingVector(Client):
             auth=auth,
             sts_token=sts_token,
             scheme=scheme,
-            connection_timeout=connection_timeout,
-            socket_timeout=socket_timeout,
+            timeout=timeout,
         )
 
     def collection(
@@ -118,7 +115,7 @@ class VikingVector(Client):
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
-            "User-Agent": self._user_agent,
+            "User-Agent": _DEFAULT_USER_AGENT,
         }
         if request_options.headers:
             headers.update(request_options.headers)
@@ -127,10 +124,56 @@ class VikingVector(Client):
 
         body = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
         params = dict(request_options.query) if request_options.query else None
-        response_data = self._json(api, params, body, headers=headers)
+        response_data = self.json_exception(api, params, body, headers=headers, timeout=request_options.timeout)
         if not response_data:
             return {}
         return response_data
+
+    def json_exception(
+        self,
+        api: str,
+        params: Optional[Mapping[str, Any]],
+        body: Any,
+        headers: Optional[Mapping[str, str]] = None,
+        *,
+        timeout: Optional[int] = None,
+    ) -> Any:
+        """Send JSON request and raise structured vector exceptions on failure."""
+        try:
+            response = self._json(api, params, body, headers=headers, timeout=timeout)
+        except Exception as e:
+            try:
+                err_msg = (
+                    e.args[0].decode("utf-8")
+                    if isinstance(e.args[0], bytes)
+                    else str(e.args[0])
+                )
+                res_json = json.loads(err_msg)
+            except:
+                raise VikingVectorException(
+                    1000028, "missed", "failed to decode error response for {}, res:{}".format(api, str(e))
+                ) from None
+            if "ResponseMetadata" in res_json:
+                error = res_json["ResponseMetadata"].get("Error", {})
+                code = error.get("Code", 1000028)
+                request_id = error.get("RequestId", "unknown")
+                message = error.get("Message", None)
+                raise EXCEPTION_MAP.get(code, VikingVectorException)(
+                    code, request_id, message
+                ) from None
+            else:
+                code = res_json.get("code", 1000028)
+                request_id = res_json.get("request_id", "unknown")
+                message = res_json.get("message", None)
+                raise VikingVectorException(
+                    code, request_id, message
+                ) from None
+        if response is None:
+            raise VikingVectorException(
+                1000028, request_id,
+                f"empty response received for api {api}",
+            ) from None
+        return response
 
     def _build_api_info(self):
         header = {"Accept": "application/json"}

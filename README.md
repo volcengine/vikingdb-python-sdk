@@ -30,9 +30,7 @@ client = VikingVector(
     region="cn-beijing",
     auth=auth,
     scheme="https",
-    connection_timeout=30,
-    socket_timeout=30,
-    user_agent="vikingdb-python-sdk-demo",
+    timeout=30,
 )
 
 collection = client.collection(collection_name="demo_collection")
