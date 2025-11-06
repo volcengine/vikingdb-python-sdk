@@ -20,7 +20,6 @@ from .client import (
 from .models import (
     AggRequest,
     AggResponse,
-    DataApiResponse,
     FetchDataInIndexRequest,
     FetchDataInIndexResponse,
     IndexMeta,

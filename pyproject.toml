@@ -46,4 +46,5 @@ version = {attr = "vikingdb.version.__version__"}
 [dependency-groups]
 dev = [
     "pytest>=7.4.4",
+    "ruff>=0.14.3",
 ]

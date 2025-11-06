@@ -6,12 +6,11 @@
 
 from __future__ import annotations
 
-import json
-
 from volcengine.ApiInfo import ApiInfo
 
 from .._client import Client
 from ..auth import Auth
+from ..exceptions import VikingException, promote_exception
 from .collection import Collection
 from .exceptions import EXCEPTION_MAP, VikingMemException
 from ..version import __version__
@@ -193,33 +192,12 @@ class VikingMem(Client):
         """
         try:
             res = self._json(api, params, body, headers=headers, timeout=timeout)
-        except Exception as e:
-            try:
-                err_msg = (
-                    e.args[0].decode("utf-8")
-                    if isinstance(e.args[0], bytes)
-                    else str(e.args[0])
-                )
-                res_json = json.loads(err_msg)
-            except:
-                raise VikingMemException(
-                    1000028, "missed", "json load res error, res:{}".format(str(e))
-                ) from None
-            if "ResponseMetadata" in res_json:
-                error = res_json["ResponseMetadata"].get("Error", {})
-                code = error.get("Code", 1000028)
-                request_id = error.get("RequestId", "unknown")
-                message = error.get("Message", None)
-                raise EXCEPTION_MAP.get(code, VikingMemException)(
-                    code, request_id, message
-                ) from None
-            else:
-                code = res_json.get("code", 1000028)
-                request_id = res_json.get("request_id", "unknown")
-                message = res_json.get("message", None)
-                raise VikingMemException(
-                    code, request_id, message
-                ) from None
+        except VikingException as exc:
+            raise promote_exception(
+                exc,
+                exception_map=EXCEPTION_MAP,
+                default_cls=VikingMemException,
+            ) from None
         if res is None:
             raise VikingMemException(
                 1000028,
@@ -241,33 +219,12 @@ class VikingMem(Client):
         """
         try:
             res = await self.async_json(api, params, body, headers=headers, timeout=timeout)
-        except Exception as e:
-            try:
-                err_msg = (
-                    e.args[0].decode("utf-8")
-                    if isinstance(e.args[0], bytes)
-                    else str(e.args[0])
-                )
-                res_json = json.loads(err_msg)
-            except:
-                raise VikingMemException(
-                    1000028, "missed", "json load res error, res:{}".format(str(e))
-                ) from None
-            if "ResponseMetadata" in res_json:
-                error = res_json["ResponseMetadata"].get("Error", {})
-                code = error.get("Code", 1000028)
-                request_id = error.get("RequestId", "unknown")
-                message = error.get("Message", None)
-                raise EXCEPTION_MAP.get(code, VikingMemException)(
-                    code, request_id, message
-                ) from None
-            else:
-                code = res_json.get("code", 1000028)
-                request_id = res_json.get("request_id", "unknown")
-                message = res_json.get("message", None)
-                raise VikingMemException(
-                    code, request_id, message
-                ) from None
+        except VikingException as exc:
+            raise promote_exception(
+                exc,
+                exception_map=EXCEPTION_MAP,
+                default_cls=VikingMemException,
+            ) from None
         if res is None:
             raise VikingMemException(
                 1000028,

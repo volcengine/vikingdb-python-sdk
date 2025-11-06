@@ -4,14 +4,16 @@
 from __future__ import annotations
 
 import json
+import time
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Optional
 
 from volcengine.ApiInfo import ApiInfo
 
-from .._client import Client
+from .._client import Client, _REQUEST_ID_HEADER
 from ..auth import Auth
-from .exceptions import EXCEPTION_MAP, VikingVectorException
+from ..exceptions import VikingException
+from .exceptions import VikingVectorException, VikingConnectionException
 from ..request_options import RequestOptions, ensure_request_options
 from ..version import __version__
 from .models import CollectionMeta, IndexMeta
@@ -21,7 +23,6 @@ if TYPE_CHECKING:
     from .embedding import EmbeddingClient
     from .index import IndexClient
 
-_REQUEST_ID_HEADER = "X-Tt-Logid"
 _DEFAULT_USER_AGENT = f"vikingdb-python-sdk/{__version__}"
 
 API_VECTOR_DATA_UPSERT = "VectorDataUpsert"
@@ -64,6 +65,12 @@ class VikingVector(Client):
             scheme=scheme,
             timeout=timeout,
         )
+        try:
+            resp = self.session.get(f"{scheme}://{host}/api/vikingdb/Ping")
+            if resp.status_code != 200:
+                raise VikingConnectionException(f"failed to ping {host}", f"{resp.status_code}")
+        except Exception as exp:
+            raise VikingConnectionException(f"failed to ping {host} ", str(exp))
 
     def collection(
         self,
@@ -112,6 +119,13 @@ class VikingVector(Client):
         options: Optional[RequestOptions] = None,
     ) -> Mapping[str, object]:
         request_options = ensure_request_options(options)
+        max_attempts = (
+            request_options.max_attempts
+            if request_options.max_attempts and request_options.max_attempts > 0
+            else 3
+        )
+        initial_delay_seconds = 0.5
+        max_delay_seconds = 8.0
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -124,10 +138,26 @@ class VikingVector(Client):
 
         body = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
         params = dict(request_options.query) if request_options.query else None
-        response_data = self.json_exception(api, params, body, headers=headers, timeout=request_options.timeout)
-        if not response_data:
-            return {}
-        return response_data
+        for attempt in range(1, max_attempts + 1):
+            try:
+                response_data = self.json_exception(
+                    api,
+                    params,
+                    body,
+                    headers=headers,
+                    timeout=request_options.timeout,
+                )
+                if not response_data:
+                    return {}
+                return response_data
+            except Exception:
+                if attempt >= max_attempts:
+                    raise
+                delay = min(
+                    initial_delay_seconds * (2 ** (attempt - 1)),
+                    max_delay_seconds,
+                )
+                time.sleep(delay)
 
     def json_exception(
         self,
@@ -141,36 +171,12 @@ class VikingVector(Client):
         """Send JSON request and raise structured vector exceptions on failure."""
         try:
             response = self._json(api, params, body, headers=headers, timeout=timeout)
-        except Exception as e:
-            try:
-                err_msg = (
-                    e.args[0].decode("utf-8")
-                    if isinstance(e.args[0], bytes)
-                    else str(e.args[0])
-                )
-                res_json = json.loads(err_msg)
-            except:
-                raise VikingVectorException(
-                    1000028, "missed", "failed to decode error response for {}, res:{}".format(api, str(e))
-                ) from None
-            if "ResponseMetadata" in res_json:
-                error = res_json["ResponseMetadata"].get("Error", {})
-                code = error.get("Code", 1000028)
-                request_id = error.get("RequestId", "unknown")
-                message = error.get("Message", None)
-                raise EXCEPTION_MAP.get(code, VikingVectorException)(
-                    code, request_id, message
-                ) from None
-            else:
-                code = res_json.get("code", 1000028)
-                request_id = res_json.get("request_id", "unknown")
-                message = res_json.get("message", None)
-                raise VikingVectorException(
-                    code, request_id, message
-                ) from None
+        except VikingException as exc:
+            raise exc.promote(VikingVectorException) from None
         if response is None:
             raise VikingVectorException(
-                1000028, request_id,
+                "InternalServerError",
+                "unknown",
                 f"empty response received for api {api}",
             ) from None
         return response

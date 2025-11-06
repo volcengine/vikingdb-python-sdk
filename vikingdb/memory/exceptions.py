@@ -6,21 +6,28 @@
 
 from typing import Optional
 
+from ..exceptions import VikingException
 
-class VikingMemException(Exception):
+
+class VikingMemException(VikingException):
     """Viking Memory base exception class"""
 
-    def __init__(self, code: int, request_id: str, message: Optional[str] = None):
-        self.code = code
-        self.request_id = request_id
-        if message is not None:
-            self.message = message
-        else:
-            self.message = f"unknown error, request_id: {self.request_id}"
-        super().__init__(self.message)
-
-    def __str__(self) -> str:
-        return f"{self.message}, code: {self.code}, request_id: {self.request_id}"
+    def __init__(
+        self,
+        code: int,
+        request_id: str,
+        message: Optional[str] = None,
+        *,
+        status_code: Optional[int] = None,
+    ):
+        if message is None:
+            message = f"unknown error, request_id: {request_id}"
+        super().__init__(
+            code,
+            request_id,
+            message,
+            status_code=status_code,
+        )
 
 
 class UnauthorizedException(VikingMemException):
@@ -288,4 +295,3 @@ EXCEPTION_MAP = {
     1000028: InternalServerException,         # Internal server error
     1000029: QuotaLimiterException,           # Request rate limit exceeded
 }
-

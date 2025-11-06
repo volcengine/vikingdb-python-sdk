@@ -14,7 +14,7 @@ This package provides an idiomatic Python interface to the VikingDB v2 data-plan
 Clone the repository and install the SDK in editable mode:
 
 ```bash
-pip install -e .
+uv add vikingdb-python-sdk
 ```
 
 > **Dependencies:** The SDK relies on `requests`, `pydantic>=2.5`, and the Volcano Engine base SDK (`volcengine`) for request signing.
@@ -24,34 +24,24 @@ pip install -e .
 #### Vector Database
 
 ```python
+import os
 from vikingdb import IAM
-from vikingdb.vector import UpsertDataRequest, VikingVector
+from vikingdb.vector import SearchByRandomRequest, VikingVector
 
-auth = IAM(ak="<AK>", sk="<SK>")
+auth = IAM(ak=os.environ["VIKINGDB_AK"], sk=os.environ["VIKINGDB_SK"]) 
 client = VikingVector(
-    host="api.vector.bytedance.com",
-    region="cn-beijing",
+    host=os.environ["VIKINGDB_HOST"],
+    region=os.environ["VIKINGDB_REGION"],
     auth=auth,
     scheme="https",
     timeout=30,
 )
-
-collection = client.collection(collection_name="demo_collection")
-index = client.index(collection_name="demo_collection", index_name="demo_index")
-embedding = client.embedding()
-
-# Upsert documents into a collection
-upsert_request = UpsertDataRequest(
-    data=[
-        {"title": "Demo Chapter", "paragraph": 1, "score": 42.0, "text": "hello vikingdb"},
-    ]
+index = client.index(
+    collection_name=os.environ["VIKINGDB_COLLECTION"],
+    index_name=os.environ["VIKINGDB_INDEX"],
 )
-response = collection.upsert(upsert_request)
-print("request_id:", response.request_id, "result:", response.result)
-
-# Run a quick search
-search_response = index.search_by_random({"limit": 1})
-print("search hits:", len(search_response.result.data) if search_response.result else 0)
+resp = index.search_by_random(SearchByRandomRequest(limit=1))
+print(f"request_id={resp.request_id} hits={len(resp.result.data or [])}")
 ```
 
 #### Memory Management
@@ -107,6 +97,8 @@ The integration guides under `examples/vector` mirror the Go SDK walkthroughs (`
    ```
    VIKINGDB_AK=your-access-key
    VIKINGDB_SK=your-secret-key
+   VIKINGDB_COLLECTION=demo_collection
+   VIKINGDB_INDEX=demo_index
    # Optional:
    # VIKINGDB_PROJECT=project-name
    # VIKINGDB_RESOURCE_ID=resource-id
