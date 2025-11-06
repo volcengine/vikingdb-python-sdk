@@ -88,9 +88,9 @@ print("search results:", result)
 
 ### Example Guides
 
-#### Vector Examples (Pytest)
+#### Vector Examples
 
-The integration guides under `examples/vector` mirror the Go SDK walkthroughs (`E1`–`E5`). Each test connects to a live VikingDB environment and exercises a specific workflow.
+The integration guides under `examples/vector` mirror the Go SDK walkthroughs (`1`–`6`). Each test connects to a live VikingDB environment and exercises a specific workflow.
 
 1. Set the required environment variables (or create a `.env` file in the project root):
 
@@ -114,13 +114,13 @@ The integration guides under `examples/vector` mirror the Go SDK walkthroughs (`
 2. Install pytest (if not already available):
 
    ```bash
-   pip install pytest
+   uv add --dev pytest
    ```
 
 3. Execute the guides:
 
    ```bash
-   pytest examples/vector -k guide
+   uv run pytest examples/vector -k scenario
    ```
 
 Each scenario writes temporary documents using unique session tags and cleans them up afterwards.
@@ -185,9 +185,9 @@ vikingdb/
 
 examples/
 ├── vector/              # Vector integration guides (pytest)
-│   ├── E1_connectivity_test.py
-│   ├── E2_collection_lifecycle_test.py
-│   ├── E3_*_test.py     # Search and indexing examples
+│   ├── 1_connectivity_test.py
+│   ├── 2_collection_lifecycle_test.py
+│   ├── 3_*_test.py     # Search and indexing examples
 │   └── ...
 └── memory/              # Memory usage examples
     ├── 01_init_client_and_collection.py

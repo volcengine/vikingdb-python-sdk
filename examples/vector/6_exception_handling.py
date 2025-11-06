@@ -15,61 +15,32 @@ Run:
 
 from __future__ import annotations
 
-import sys
+import os
 
 from vikingdb import IAM
-from vikingdb.vector import VikingVector
-from vikingdb.vector.exceptions import VikingVectorException, VikingConnectionException
-
-from .test_helper import EnvConfig, load_config
+from vikingdb.vector import SearchByRandomRequest, VikingVector
 
 
-def _build_vector_client(*, host_override: str | None = None, timeout: int | None = None) -> tuple[EnvConfig, VikingVector]:
-    """Create a VikingVector client using the shared guide configuration."""
-    config = load_config()
-    auth = IAM(ak=config.access_key, sk=config.secret_key)
-    client = VikingVector(
-        host=host_override if host_override is not None else config.host,
-        region=config.region,
-        scheme=config.scheme,
-        auth=auth,
-        timeout=timeout if timeout is not None else 30,
+def main() -> None:
+    """Connectivity quickstart mirroring the snippet test."""
+    auth = IAM(
+        ak=os.environ["VIKINGDB_AK"],
+        sk=os.environ["VIKINGDB_SK"],
     )
-    return config, client
+    client = VikingVector(
+        host=os.environ["VIKINGDB_HOST"],
+        region=os.environ["VIKINGDB_REGION"],
+        auth=auth,
+        scheme="https",
+        timeout=30,
+    )
+    index_client = client.index(
+        collection_name="unknown",
+        index_name="unknown",
+    )
 
-
-def demo_collection_not_exist() -> None:
-    """Attempt to fetch from a non-existent collection to trigger an SDK exception."""
-    try:
-        config, client = _build_vector_client()
-        missing_collection = f"{config.collection}-missing"
-        collection_client = client.collection(
-            collection_name=missing_collection,
-            project_name=config.project_name,
-            resource_id=config.resource_id,
-        )
-        # Intentionally request a fake ID
-        collection_client.fetch({"ids": ["non-existent-id"]})
-    except VikingVectorException as e:
-        print(f"Caught VikingVectorException: code={getattr(e, 'code', None)} message={e}")
-
-
-def demo_wrong_host_network_error() -> None:
-    """Use an invalid host to demonstrate a network connection error."""
-    try:
-        _build_vector_client(host_override="in-v-alid.io", timeout=1)
-    except VikingConnectionException as e:
-        print(f"Caught VikingConnectionException: message={e}")
-
-
-
-def main() -> int:
-    print("-- Scenario 6: Exception handling demos --")
-    demo_collection_not_exist()
-    demo_wrong_host_network_error()
-    print("-- Done --")
-    return 0
+    index_client.search_by_random(SearchByRandomRequest(limit=1))
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

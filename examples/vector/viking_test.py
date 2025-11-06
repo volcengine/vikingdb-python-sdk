@@ -28,24 +28,26 @@ from vikingdb.vector import (
     VikingVector,
 )
 
-from .test_helper import (
-    Clients,
-    EnvConfig,
-    DEFAULT_REGION,
-    EMBEDDING_MODEL_NAME,
-    TEXT_COLLECTION,
-    TEXT_INDEX,
+# Ensure local helper can be imported when running via pytest path
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
+
+from test_helper import (
     VECTOR_COLLECTION,
     VECTOR_INDEX,
-    require_env_vars,
     load_config,
-    build_clients,
     embed_dense_vectors,
-    StoryChapter,
     build_story_chapters,
     chapters_to_upsert,
     assign_chapter_ids_via_search,
-    search_chapter_by_narrative,
+    new_session_tag,
+    build_request_options,
+    cleanup_chapters,
+    bool_and_filters,
+    session_paragraph_bounds,
+    score_at_least_filter,
+    assert_keyword_hit_titles,
 )
 
 
