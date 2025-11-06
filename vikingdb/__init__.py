@@ -17,6 +17,7 @@ from .memory import (
     VikingMem,
     Collection,
 )
+from .version import __version__
 __all__ = [
     "IAM",
     "APIKey",
@@ -29,4 +30,5 @@ __all__ = [
     "memory",
     "VikingMem",
     "Collection",
+    "__version__",
 ]
