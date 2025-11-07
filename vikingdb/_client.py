@@ -16,8 +16,9 @@ from volcengine.ApiInfo import ApiInfo
 from volcengine.ServiceInfo import ServiceInfo
 from volcengine.base.Request import Request
 from volcengine.base.Service import Service
+import requests
 
-from .auth import Auth
+from .auth import Auth, IAM, APIKey
 from .exceptions import (
     DEFAULT_UNKNOWN_ERROR_CODE,
     VikingAPIException,
@@ -52,7 +53,13 @@ class Client(Service, ABC):
             timeout=timeout,
         )
         self.api_info = self._build_api_info()
-        super().__init__(self.service_info, self.api_info)
+        # 判断auth是不是IAM 还是 APIKey类型
+        if isinstance(auth, IAM):
+            super().__init__(self.service_info, self.api_info)
+        elif isinstance(auth, APIKey):
+            self.session = requests.session()
+        else:
+            raise ValueError("auth must be IAM or APIKey type")
 
         if sts_token:
             self.set_session_token(session_token=sts_token)
@@ -81,7 +88,7 @@ class Client(Service, ABC):
     def prepare_request(self, api_info: ApiInfo, params: Optional[Mapping[str, Any]], doseq: int = 0):
         """Prepare a volcengine request without adding implicit headers."""
         request = Request()
-        request.set_schema(self.service_info.scheme)
+        request.set_shema(self.service_info.scheme)
         request.set_method(api_info.method)
         request.set_host(self.service_info.host)
         request.set_path(api_info.path)
