@@ -175,6 +175,20 @@ class VikingMem(Client):
                 {},
                 _get_common_viking_request_header(),
             ),
+            "SearchEventMemory": ApiInfo(
+                "POST",
+                "/api/memory/event/search",
+                {},
+                {},
+                _get_common_viking_request_header(),
+            ),
+            "SearchProfileMemory": ApiInfo(
+                "POST",
+                "/api/memory/profile/search",
+                {},
+                {},
+                _get_common_viking_request_header(),
+            ),
             # Service APIs
             "Ping": ApiInfo("GET", "/api/memory/ping", {}, {}, _get_common_viking_request_header()),
         }
