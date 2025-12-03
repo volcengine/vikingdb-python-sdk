@@ -850,4 +850,116 @@ class Collection:
         res = await self.client.async_json_exception("SearchMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
+    def search_event_memory(
+        self,
+        query=None,
+        filter=None,
+        time_decay_config=None,
+        limit=None,
+        headers=None,
+        timeout=None
+    ):
+        params = {}
+        if self.collection_name is not None:
+            params["collection_name"] = self.collection_name
+        if self.project_name is not None:
+            params["project_name"] = self.project_name
+        if query is not None:
+            params["query"] = query
+        if filter is not None:
+            params["filter"] = filter
+        if time_decay_config is not None:
+            params["time_decay_config"] = time_decay_config
+        if limit is not None:
+            params["limit"] = limit
+        if self.resource_id is not None:
+            params["resource_id"] = self.resource_id
+
+        res = self.client.json_exception("SearchEventMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        return res
+
+    def search_profile_memory(
+        self,
+        query=None,
+        filter=None,
+        limit=None,
+        headers=None,
+        timeout=None
+    ):
+        params = {}
+        if self.collection_name is not None:
+            params["collection_name"] = self.collection_name
+        if self.project_name is not None:
+            params["project_name"] = self.project_name
+        if query is not None:
+            params["query"] = query
+        if filter is not None:
+            params["filter"] = filter
+        if limit is not None:
+            params["limit"] = limit
+        if self.resource_id is not None:
+            params["resource_id"] = self.resource_id
+
+        res = self.client.json_exception("SearchProfileMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        return res
+
+    async def async_search_event_memory(
+        self,
+        query=None,
+        filter=None,
+        time_decay_config=None,
+        limit=None,
+        headers=None,
+        timeout=None
+    ):
+        """
+        Search event memories in the collection asynchronously
+        """
+        params = {}
+        if self.collection_name is not None:
+            params["collection_name"] = self.collection_name
+        if self.project_name is not None:
+            params["project_name"] = self.project_name
+        if query is not None:
+            params["query"] = query
+        if filter is not None:
+            params["filter"] = filter
+        if time_decay_config is not None:
+            params["time_decay_config"] = time_decay_config
+        if limit is not None:
+            params["limit"] = limit
+        if self.resource_id is not None:
+            params["resource_id"] = self.resource_id
+
+        res = await self.client.async_json_exception("SearchEventMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        return res
+
+    async def async_search_profile_memory(
+        self,
+        query=None,
+        filter=None,
+        limit=None,
+        headers=None,
+        timeout=None
+    ):
+        """
+        Search profile memories in the collection asynchronously
+        """
+        params = {}
+        if self.collection_name is not None:
+            params["collection_name"] = self.collection_name
+        if self.project_name is not None:
+            params["project_name"] = self.project_name
+        if query is not None:
+            params["query"] = query
+        if filter is not None:
+            params["filter"] = filter
+        if limit is not None:
+            params["limit"] = limit
+        if self.resource_id is not None:
+            params["resource_id"] = self.resource_id
+
+        res = await self.client.async_json_exception("SearchProfileMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        return res
+
     
