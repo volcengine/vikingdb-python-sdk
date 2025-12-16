@@ -52,7 +52,8 @@ class Collection:
         assistant_id=None, 
         group_id=None, 
         headers=None,
-        timeout=None
+        timeout=None,
+        update_profiles=None,
     ):
         """
         Add an event to the collection
@@ -65,6 +66,7 @@ class Collection:
             group_id (str, optional): Group ID
             headers (dict, optional): Custom request headers
             timeout (int, optional): Timeout in seconds
+            update_profiles (optional): Profiles to update along with the event
             
         Returns:
             dict: Event information
@@ -83,6 +85,8 @@ class Collection:
             params["assistant_id"] = assistant_id
         if group_id is not None:
             params["group_id"] = group_id
+        if update_profiles is not None:
+            params["update_profiles"] = update_profiles
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
@@ -97,7 +101,8 @@ class Collection:
         assistant_id=None, 
         group_id=None, 
         headers=None,
-        timeout=None
+        timeout=None,
+        update_profiles=None,
     ):
         """
         Add an event to the collection asynchronously
@@ -110,6 +115,7 @@ class Collection:
             group_id (str, optional): Group ID
             headers (dict, optional): Custom request headers
             timeout (int, optional): Timeout in seconds
+            update_profiles (optional): Profiles to update along with the event
             
         Returns:
             dict: Event information
@@ -128,6 +134,8 @@ class Collection:
             params["assistant_id"] = assistant_id
         if group_id is not None:
             params["group_id"] = group_id
+        if update_profiles is not None:
+            params["update_profiles"] = update_profiles
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
@@ -565,6 +573,65 @@ class Collection:
             params["resource_id"] = self.resource_id
 
         res = await self.client.async_json_exception("DeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        return res
+
+    def trigger_update_profile(
+        self,
+        update_profile_type=None,
+        filters=None,
+        headers=None,
+        timeout=None,
+    ):
+        """
+        Trigger profile update tasks for the collection
+        
+        Args:
+            update_profile_type (list|str, optional): Profile types to update
+            filters (dict, optional): Filter conditions, e.g., user_id, end_time
+            headers (dict, optional): Custom request headers
+            timeout (int, optional): Timeout in seconds
+        
+        Returns:
+            dict: Trigger result
+        """
+        params = {}
+        if self.collection_name is not None:
+            params["collection_name"] = self.collection_name
+        if self.project_name is not None:
+            params["project_name"] = self.project_name
+        if update_profile_type is not None:
+            params["update_profile_type"] = update_profile_type
+        if filters is not None:
+            params["filters"] = filters
+        if self.resource_id is not None:
+            params["resource_id"] = self.resource_id
+
+        res = self.client.json_exception("TriggerUpdateProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        return res
+
+    async def async_trigger_update_profile(
+        self,
+        update_profile_type=None,
+        filters=None,
+        headers=None,
+        timeout=None,
+    ):
+        """
+        Trigger profile update tasks for the collection asynchronously
+        """
+        params = {}
+        if self.collection_name is not None:
+            params["collection_name"] = self.collection_name
+        if self.project_name is not None:
+            params["project_name"] = self.project_name
+        if update_profile_type is not None:
+            params["update_profile_type"] = update_profile_type
+        if filters is not None:
+            params["filters"] = filters
+        if self.resource_id is not None:
+            params["resource_id"] = self.resource_id
+
+        res = await self.client.async_json_exception("TriggerUpdateProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
     
     def batch_delete_profile(
