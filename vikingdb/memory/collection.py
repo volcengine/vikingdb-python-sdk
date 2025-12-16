@@ -635,7 +635,8 @@ class Collection:
         metadata=None, 
         profiles=None,
         headers=None,
-        timeout=None
+        timeout=None,
+        store_file=None
     ):
         """
         Add session messages to the collection
@@ -653,7 +654,8 @@ class Collection:
         """
         params = {
             "session_id": session_id,
-            "messages": messages
+            "messages": messages,
+            "store_file": store_file
         }
         if self.collection_name is not None:
             params["collection_name"] = self.collection_name
@@ -676,7 +678,8 @@ class Collection:
         metadata=None, 
         profiles=None,
         headers=None,
-        timeout=None
+        timeout=None,
+        store_file=None
     ):
         """
         Add session messages to the collection asynchronously
@@ -694,7 +697,8 @@ class Collection:
         """
         params = {
             "session_id": session_id,
-            "messages": messages
+            "messages": messages,
+            "store_file": store_file
         }
         if self.collection_name is not None:
             params["collection_name"] = self.collection_name
