@@ -123,6 +123,13 @@ class VikingMem(Client):
                 {},
                 _get_common_viking_request_header(),
             ),
+            "TriggerUpdateProfile": ApiInfo(
+                "POST",
+                "/api/memory/profile/trigger_update",
+                {},
+                {},
+                _get_common_viking_request_header(),
+            ),
             # Event APIs
             "AddEvent": ApiInfo(
                 "POST",
