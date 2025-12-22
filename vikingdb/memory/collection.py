@@ -722,7 +722,6 @@ class Collection:
         params = {
             "session_id": session_id,
             "messages": messages,
-            "store_file": store_file
         }
         if self.collection_name is not None:
             params["collection_name"] = self.collection_name
@@ -734,6 +733,8 @@ class Collection:
             params["profiles"] = profiles
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
+        if store_file is not None:
+            params["store_file"] = store_file
 
         res = self.client.json_exception("AddSession", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
@@ -765,7 +766,6 @@ class Collection:
         params = {
             "session_id": session_id,
             "messages": messages,
-            "store_file": store_file
         }
         if self.collection_name is not None:
             params["collection_name"] = self.collection_name
@@ -777,6 +777,8 @@ class Collection:
             params["profiles"] = profiles
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
+        if store_file is not None:
+            params["store_file"] = store_file
 
         res = await self.client.async_json_exception("AddSession", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
         return res
