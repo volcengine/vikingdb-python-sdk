@@ -21,7 +21,6 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
 ]
 dependencies = [
-    "numpy>=1.21.6",
     "httpx>=0.24.1",
     "requests>=2.28.1",
     "pydantic>=2.5.3",
