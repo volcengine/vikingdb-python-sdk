@@ -11,6 +11,7 @@ from .vector import (
     CollectionClient,
     EmbeddingClient,
     IndexClient,
+    RerankClient,
     VikingVector,
 )
 from .memory import (
@@ -23,6 +24,7 @@ __all__ = [
     "APIKey",
     "CollectionClient",
     "EmbeddingClient",
+    "RerankClient",
     "IndexClient",
     "RequestOptions",
     "VikingVector",

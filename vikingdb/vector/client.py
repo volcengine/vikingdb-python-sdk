@@ -21,6 +21,7 @@ from .models import CollectionMeta, IndexMeta
 if TYPE_CHECKING:
     from .collection import CollectionClient
     from .embedding import EmbeddingClient
+    from .rerank import RerankClient
     from .index import IndexClient
 
 _DEFAULT_USER_AGENT = f"vikingdb-python-sdk/{__version__}"
@@ -38,6 +39,7 @@ API_VECTOR_SEARCH_BY_KEYWORDS = "VectorSearchByKeywords"
 API_VECTOR_SEARCH_BY_RANDOM = "VectorSearchByRandom"
 API_VECTOR_DATA_AGGREGATE = "VectorDataAggregate"
 API_VECTOR_EMBEDDING = "VectorEmbedding"
+API_VECTOR_RERANK = "VectorRerank"
 
 
 class VikingVector(Client):
@@ -110,6 +112,11 @@ class VikingVector(Client):
         from .embedding import EmbeddingClient
 
         return EmbeddingClient(self)
+
+    def rerank(self) -> "RerankClient":
+        from .rerank import RerankClient
+
+        return RerankClient(self)
 
     def request(
         self,
@@ -271,6 +278,13 @@ class VikingVector(Client):
             API_VECTOR_EMBEDDING: ApiInfo(
                 "POST",
                 "/api/vikingdb/embedding",
+                {},
+                {},
+                header,
+            ),
+            API_VECTOR_RERANK: ApiInfo(
+                "POST",
+                "/api/vikingdb/rerank",
                 {},
                 {},
                 header,

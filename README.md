@@ -172,6 +172,7 @@ vikingdb/
 │   ├── base.py          # Shared helpers for vector clients
 │   ├── collection.py    # Collection operations
 │   ├── embedding.py     # Embedding operations
+│   ├── rerank.py        # rerank operations
 │   ├── index.py         # Index/search operations
 │   ├── client.py        # Vector service wrapper and high-level client
 │   ├── exceptions.py    # Vector-specific exceptions

@@ -32,6 +32,12 @@ from .embedding import (
     EmbeddingResult,
     FullModalData,
 )
+from .rerank import (
+    Rerank,
+    RerankRequest,
+    RerankResponse,
+    RerankResult,
+)
 from .index import (
     AggRequest,
     AggResponse,
@@ -67,6 +73,10 @@ __all__ = [
     "EmbeddingRequest",
     "EmbeddingResponse",
     "EmbeddingResult",
+    "RerankRequest",
+    "RerankResponse",
+    "RerankResult",
+    "Rerank",
     "FetchDataInCollectionRequest",
     "FetchDataInCollectionResponse",
     "FetchDataInCollectionResult",
