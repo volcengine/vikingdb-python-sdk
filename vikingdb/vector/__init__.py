@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from .client import VikingVector
+from .client import VikingDB, VikingVector
 from .collection import CollectionClient
 from .embedding import EmbeddingClient
 from .rerank import RerankClient
@@ -12,6 +12,7 @@ from .models import CollectionMeta, IndexMeta, __all__ as _models_all  # noqa: F
 from .models import *  # noqa: F401,F403
 from .exceptions import VikingVectorException
 __all__ = [
+    "VikingDB",
     "VikingVector",
     "CollectionClient",
     "IndexClient",

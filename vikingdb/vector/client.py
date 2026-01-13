@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import time
+import warnings
 from collections.abc import Mapping
 from typing import TYPE_CHECKING, Any, Optional
 
@@ -17,6 +18,17 @@ from .exceptions import VikingVectorException, VikingConnectionException
 from ..request_options import RequestOptions, ensure_request_options
 from ..version import __version__
 from .models import CollectionMeta, IndexMeta
+
+try:
+    from typing import deprecated as _deprecated
+except ImportError:  # pragma: no cover - fallback for older Python versions
+    try:
+        from typing_extensions import deprecated as _deprecated
+    except ImportError:  # pragma: no cover - optional fallback
+        def _deprecated(*_args, **_kwargs):  # type: ignore
+            def _decorator(obj):
+                return obj
+            return _decorator
 
 if TYPE_CHECKING:
     from .collection import CollectionClient
@@ -42,7 +54,7 @@ API_VECTOR_EMBEDDING = "VectorEmbedding"
 API_VECTOR_RERANK = "VectorRerank"
 
 
-class VikingVector(Client):
+class VikingDB(Client):
     """Unified Vector client combining service and convenience helpers."""
 
     def __init__(
@@ -56,7 +68,7 @@ class VikingVector(Client):
         timeout: int = 30,
     ) -> None:
         if auth is None:
-            raise ValueError("auth is required for VikingVector")
+            raise ValueError("auth is required for VikingDB")
 
         super().__init__(
             host=host,
@@ -73,6 +85,35 @@ class VikingVector(Client):
                 raise VikingConnectionException(f"failed to ping {host}", f"{resp.status_code}")
         except Exception as exp:
             raise VikingConnectionException(f"failed to ping {host} ", str(exp))
+
+
+@_deprecated("VikingVector is deprecated; use VikingDB instead.")
+class VikingVector(VikingDB):
+    """Deprecated alias for VikingDB."""
+
+    def __init__(
+        self,
+        *,
+        host: str,
+        region: str,
+        auth: Auth,
+        scheme: str = "https",
+        sts_token: str = "",
+        timeout: int = 30,
+    ) -> None:
+        warnings.warn(
+            "VikingVector is deprecated; use VikingDB instead.",
+            FutureWarning,
+            stacklevel=2,
+        )
+        super().__init__(
+            host=host,
+            region=region,
+            auth=auth,
+            scheme=scheme,
+            sts_token=sts_token,
+            timeout=timeout,
+        )
 
     def collection(
         self,

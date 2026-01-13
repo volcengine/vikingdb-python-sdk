@@ -26,10 +26,10 @@ uv add vikingdb-python-sdk
 ```python
 import os
 from vikingdb import IAM
-from vikingdb.vector import SearchByRandomRequest, VikingVector
+from vikingdb.vector import SearchByRandomRequest, VikingDB
 
 auth = IAM(ak=os.environ["VIKINGDB_AK"], sk=os.environ["VIKINGDB_SK"]) 
-client = VikingVector(
+client = VikingDB(
     host=os.environ["VIKINGDB_HOST"],
     region=os.environ["VIKINGDB_REGION"],
     auth=auth,
@@ -154,7 +154,7 @@ python examples/memory/03_search_memory.py
 ### Architecture Overview
 
 - `vikingdb._client`, `vikingdb.auth`, `vikingdb.request_options`, and `vikingdb.vector.exceptions` form the shared runtime used by all present and future SDK domains (vector, memory, knowledge).
-- Domain-specific features live under dedicated namespaces such as `vikingdb.vector` and `vikingdb.memory`, where the high-level clients (`VikingVector`, `VikingMem`) compose the shared auth stack atop the shared client.
+- Domain-specific features live under dedicated namespaces such as `vikingdb.vector` and `vikingdb.memory`, where the high-level clients (`VikingDB`, `VikingMem`) compose the shared auth stack atop the shared client.
 - Vector request/response models now surface directly from `vikingdb.vector` (backed internally by `vikingdb/vector/models`).
 - Memory APIs return plain dictionaries without object encapsulation, providing a lightweight interface for conversational memory management (session, profile, event operations).
 - Imports from the root package now focus on cross-cutting utilities (auth, config, request options), while application code should pull domain-specific functionality from `vikingdb.vector` or `vikingdb.memory` explicitly.
