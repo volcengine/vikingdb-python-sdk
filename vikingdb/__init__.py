@@ -12,6 +12,7 @@ from .vector import (
     EmbeddingClient,
     IndexClient,
     RerankClient,
+    VikingDB,
     VikingVector,
 )
 from .memory import (
@@ -27,6 +28,7 @@ __all__ = [
     "RerankClient",
     "IndexClient",
     "RequestOptions",
+    "VikingDB",
     "VikingVector",
     "vector",
     "memory",

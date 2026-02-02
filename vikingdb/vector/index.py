@@ -33,13 +33,13 @@ from .models import (
 )
 
 if TYPE_CHECKING:
-    from .client import VikingVector
+    from .client import VikingDB
 
 
 class IndexClient(VectorClientBase):
     """Client for index-scoped data operations."""
 
-    def __init__(self, service: "VikingVector", meta: IndexMeta) -> None:
+    def __init__(self, service: "VikingDB", meta: IndexMeta) -> None:
         super().__init__(service)
         self._meta = meta
         self._meta_payload = meta.model_dump(by_alias=True, exclude_none=True)

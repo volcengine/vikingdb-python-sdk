@@ -10,13 +10,13 @@ from pydantic import BaseModel
 from ..request_options import RequestOptions
 
 if TYPE_CHECKING:
-    from .client import VikingVector
+    from .client import VikingDB
 
 
 class VectorClientBase:
     """Shared helper for all Vector clients."""
 
-    def __init__(self, service: "VikingVector") -> None:
+    def __init__(self, service: "VikingDB") -> None:
         self._service = service
 
     def _post(

@@ -22,7 +22,7 @@ from vikingdb.vector import (
     IndexClient,
     SearchByKeywordsRequest,
     SearchByMultiModalRequest,
-    VikingVector,
+    VikingDB,
 )
 
 # Pinned dataset configuration for the public guide walkthroughs.
@@ -127,7 +127,7 @@ def load_config(*, collection: str = TEXT_COLLECTION, index: str = TEXT_INDEX) -
 
 def build_clients(config: EnvConfig) -> Clients:
     auth = IAM(ak=config.access_key, sk=config.secret_key)
-    client = VikingVector(
+    client = VikingDB(
         host=config.host,
         region=config.region,
         scheme=config.scheme,

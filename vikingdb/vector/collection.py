@@ -26,13 +26,13 @@ from ..request_options import RequestOptions
 from .base import VectorClientBase
 
 if TYPE_CHECKING:
-    from .client import VikingVector
+    from .client import VikingDB
 
 
 class CollectionClient(VectorClientBase):
     """Client for collection-scoped VikingDB data operations."""
 
-    def __init__(self, service: "VikingVector", meta: CollectionMeta) -> None:
+    def __init__(self, service: "VikingDB", meta: CollectionMeta) -> None:
         super().__init__(service)
         self._meta = meta
         self._meta_payload = meta.model_dump(by_alias=True, exclude_none=True)

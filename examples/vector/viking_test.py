@@ -25,7 +25,7 @@ from vikingdb.vector import (
     SearchByRandomRequest,
     SearchByVectorRequest,
     UpsertDataRequest,
-    VikingVector,
+    VikingDB,
 )
 
 # Ensure local helper can be imported when running via pytest path
@@ -51,17 +51,17 @@ from test_helper import (
 )
 
 
-# Replace multiple clients fixtures with a single shared VikingVector client
+# Replace multiple clients fixtures with a single shared VikingDB client
 @pytest.fixture(scope="module")
-def viking() -> VikingVector:
+def viking() -> VikingDB:
     cfg = load_config()
     auth = IAM(ak=cfg.access_key, sk=cfg.secret_key)
-    return VikingVector(host=cfg.host, region=cfg.region, scheme=cfg.scheme, auth=auth, timeout=30)
+    return VikingDB(host=cfg.host, region=cfg.region, scheme=cfg.scheme, auth=auth, timeout=30)
 
 
 # Scenario 1 – Connectivity
 
-def test_scenario_connectivity(viking: VikingVector) -> None:
+def test_scenario_connectivity(viking: VikingDB) -> None:
     session_tag = new_session_tag("scenario-connectivity")
     request_options = build_request_options(session_tag)
     cfg = load_config()
@@ -91,7 +91,7 @@ def test_scenario_connectivity(viking: VikingVector) -> None:
 
 # Scenario 2 – Collection Lifecycle
 
-def test_scenario_collection_lifecycle(viking: VikingVector) -> None:
+def test_scenario_collection_lifecycle(viking: VikingDB) -> None:
     session_tag = new_session_tag("collection-lifecycle")
     request_options = build_request_options(session_tag)
     base_paragraph = int(time.time()) % 1_000_000
@@ -147,7 +147,7 @@ def test_scenario_collection_lifecycle(viking: VikingVector) -> None:
 
 # Scenario 3.1 – Multi-Modal Retrieval With Filters
 
-def test_scenario_index_search_multimodal(viking: VikingVector) -> None:
+def test_scenario_index_search_multimodal(viking: VikingDB) -> None:
     session_tag = new_session_tag("index-multimodal")
     request_options = build_request_options(session_tag)
     base_paragraph = int(time.time()) % 1_000_000
@@ -199,7 +199,7 @@ def test_scenario_index_search_multimodal(viking: VikingVector) -> None:
 
 # Scenario 3.2 – Vector Retrieval With Embeddings
 
-def test_scenario_index_search_vector(viking: VikingVector) -> None:
+def test_scenario_index_search_vector(viking: VikingDB) -> None:
     session_tag = new_session_tag("search-vector")
     request_options = build_request_options(session_tag)
     base_paragraph = int(time.time()) % 1_000_000
@@ -264,7 +264,7 @@ def test_scenario_index_search_vector(viking: VikingVector) -> None:
 
 # Scenario 3.3 – Keyword Retrieval
 
-def test_scenario_search_keywords(viking: VikingVector) -> None:
+def test_scenario_search_keywords(viking: VikingDB) -> None:
     session_tag = new_session_tag("index-extensions")
     request_options = build_request_options(session_tag)
     request_options.max_attempts = 5
@@ -312,7 +312,7 @@ def test_scenario_search_keywords(viking: VikingVector) -> None:
 
 # Scenario 4 – Search Aggregations
 
-def test_scenario_search_extensions_and_analytics(viking: VikingVector) -> None:
+def test_scenario_search_extensions_and_analytics(viking: VikingDB) -> None:
     session_tag = new_session_tag("index-extensions")
     request_options = build_request_options(session_tag)
     base_paragraph = int(time.time()) % 1_000_000
@@ -353,7 +353,7 @@ def test_scenario_search_extensions_and_analytics(viking: VikingVector) -> None:
 
 # Scenario 5 – Embedding Pipelines
 
-def test_scenario_embedding_multimodal_pipeline(viking: VikingVector) -> None:
+def test_scenario_embedding_multimodal_pipeline(viking: VikingDB) -> None:
     session_tag = new_session_tag("embedding-multimodal")
     request_options = build_request_options(session_tag)
 
@@ -373,7 +373,7 @@ def test_scenario_embedding_multimodal_pipeline(viking: VikingVector) -> None:
 
 
 
-def test_scenario_embedding_ds_pipeline(viking: VikingVector) -> None:
+def test_scenario_embedding_ds_pipeline(viking: VikingDB) -> None:
     session_tag = new_session_tag("embedding-ds")
     request_options = build_request_options(session_tag)
 

@@ -9,10 +9,10 @@ The snippet below mirrors the connectivity flow without helper imports. Populate
 ```python
 import os
 from vikingdb import IAM
-from vikingdb.vector import SearchByRandomRequest, VikingVector
+from vikingdb.vector import SearchByRandomRequest, VikingDB
 
 auth = IAM(ak=os.environ["VIKINGDB_AK"], sk=os.environ["VIKINGDB_SK"]) 
-client = VikingVector(
+client = VikingDB(
     host=os.environ["VIKINGDB_HOST"],
     region=os.environ["VIKINGDB_REGION"],
     auth=auth,
@@ -97,7 +97,7 @@ env $(grep -v '^#' .env | xargs) \
 
 | Guide     | Script                           | What it demonstrates                                                                 | Key SDK calls                                                |
 |-----------|----------------------------------|---------------------------------------------------------------------------------------|--------------------------------------------------------------|
-| Guide 1   | `1_connectivity.py`              | Bootstrap SDK clients and validate connectivity via `search_by_random`.               | `VikingVector`, `index`, `IndexClient.search_by_random`      |
+| Guide 1   | `1_connectivity.py`              | Bootstrap SDK clients and validate connectivity via `search_by_random`.               | `VikingDB`, `index`, `IndexClient.search_by_random`      |
 | Guide 2   | `2_collection_lifecycle.py`      | Full CRUD lifecycle for Atlas chapters, including ID hydration through search.        | `collection.upsert`, `index.search_by_multi_modal`, `collection.update/fetch/delete` |
 | Guide 3.1 | `3_1_index_search_multimodal.py` | Multi-modal search with scalar filters scoped to the current session.                 | `collection.upsert`, `index.search_by_multi_modal`           |
 | Guide 3.2 | `3_2_index_search_vector.py`     | Pure vector search with index-side ingestion and querying.                            | `embedding.embedding`, `index.search_by_vector`              |
@@ -112,7 +112,7 @@ env $(grep -v '^#' .env | xargs) \
 
 | SDK API                             | Client       | G1 | G2 | G3.1 | G3.2 | G3.3 | G4 | G5 |
 |-------------------------------------|--------------|----|----|------|------|------|----|----|
-| `VikingVector`                      | Vector       | X  | X  | X    | X    | X    | X  | X  |
+| `VikingDB`                      | Vector       | X  | X  | X    | X    | X    | X  | X  |
 | `Client.collection`                 | Vector       |    | X  | X    | X    | X    | X  |    |
 | `Client.index`                      | Vector       | X  | X  | X    | X    | X    | X  |    |
 | `Client.embedding`                  | Vector       | X  |    |      | X    |      |    | X  |

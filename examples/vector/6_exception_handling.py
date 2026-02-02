@@ -18,7 +18,7 @@ from __future__ import annotations
 import os
 
 from vikingdb import IAM
-from vikingdb.vector import SearchByRandomRequest, VikingVector
+from vikingdb.vector import SearchByRandomRequest, VikingDB
 
 
 def main() -> None:
@@ -27,7 +27,7 @@ def main() -> None:
         ak=os.environ["VIKINGDB_AK"],
         sk=os.environ["VIKINGDB_SK"],
     )
-    client = VikingVector(
+    client = VikingDB(
         host=os.environ["VIKINGDB_HOST"],
         region=os.environ["VIKINGDB_REGION"],
         auth=auth,
