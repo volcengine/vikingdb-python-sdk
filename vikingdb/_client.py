@@ -18,7 +18,7 @@ from volcengine.base.Request import Request
 from volcengine.base.Service import Service
 import requests
 
-from .auth import Auth, IAM, APIKey
+from .auth import Auth, IAM, APIKey, HeaderAuth
 from .exceptions import (
     DEFAULT_UNKNOWN_ERROR_CODE,
     VikingAPIException,
@@ -56,10 +56,10 @@ class Client(Service, ABC):
         # 判断auth是不是IAM 还是 APIKey类型
         if isinstance(auth, IAM):
             super().__init__(self.service_info, self.api_info)
-        elif isinstance(auth, APIKey):
+        elif isinstance(auth, (APIKey, HeaderAuth)):
             self.session = requests.session()
         else:
-            raise ValueError("auth must be IAM or APIKey type")
+            raise ValueError("auth must be IAM, APIKey or HeaderAuth type")
 
         if sts_token:
             self.set_session_token(session_token=sts_token)

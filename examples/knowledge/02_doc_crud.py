@@ -4,7 +4,7 @@ import time
 from typing import List
 from vikingdb.knowledge import VikingKnowledge
 from vikingdb.auth import IAM
-from vikingdb.knowledge import AddDocV2Request, ListDocsRequest, MetaItem, DedupOptions
+from vikingdb.knowledge import AddDocV2Request, ListDocsRequest, MetaItem
 
 
 def init_client():

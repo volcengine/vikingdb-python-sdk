@@ -1,5 +1,4 @@
 import os
-import json
 from vikingdb.knowledge import VikingKnowledge, RerankDataItem
 from vikingdb.auth import IAM, APIKey
 from vikingdb.knowledge.models.search import (

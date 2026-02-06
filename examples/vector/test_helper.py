@@ -13,6 +13,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 import pytest
 
 from vikingdb import IAM, RequestOptions
+from vikingdb.auth import HeaderAuth
 from vikingdb.vector import (
     AggRequest,
     CollectionClient,
@@ -100,7 +101,8 @@ def load_config(*, collection: str = TEXT_COLLECTION, index: str = TEXT_INDEX) -
 
     access_key = os.getenv("VIKINGDB_AK")
     secret_key = os.getenv("VIKINGDB_SK")
-    if not access_key or not secret_key:
+    no_auth = os.getenv("VIKINGDB_NO_AUTH", "false").lower() == "true"
+    if not no_auth and (not access_key or not secret_key):
         pytest.skip("Missing required environment variables: VIKINGDB_AK and VIKINGDB_SK")
 
     project = os.getenv("VIKINGDB_PROJECT") or None
@@ -125,8 +127,16 @@ def load_config(*, collection: str = TEXT_COLLECTION, index: str = TEXT_INDEX) -
     )
 
 
-def build_clients(config: EnvConfig) -> Clients:
-    auth = IAM(ak=config.access_key, sk=config.secret_key)
+def build_client(config: EnvConfig) -> VikingDB:
+    if not config.access_key:
+        headers = {
+            "X-Top-Account-Id": os.getenv("VIKINGDB_HTTP_HEADER_ACCOUNT_ID"),
+            "X-Top-User-Id": os.getenv("VIKINGDB_HTTP_HEADER_USER_ID"),
+            "X-Top-Role-Id": "data",
+        }
+        auth=HeaderAuth(headers)
+    else:
+        auth = IAM(ak=config.access_key, sk=config.secret_key)
     client = VikingDB(
         host=config.host,
         region=config.region,
@@ -134,6 +144,10 @@ def build_clients(config: EnvConfig) -> Clients:
         auth=auth,
         timeout=30,
     )
+    return client
+
+def build_clients(config: EnvConfig) -> Clients:
+    client = build_client(config)
 
     collection_client = client.collection(
         collection_name=config.collection,

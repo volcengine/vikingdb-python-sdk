@@ -86,35 +86,6 @@ class VikingDB(Client):
         except Exception as exp:
             raise VikingConnectionException(f"failed to ping {host} ", str(exp))
 
-
-@_deprecated("VikingVector is deprecated; use VikingDB instead.")
-class VikingVector(VikingDB):
-    """Deprecated alias for VikingDB."""
-
-    def __init__(
-        self,
-        *,
-        host: str,
-        region: str,
-        auth: Auth,
-        scheme: str = "https",
-        sts_token: str = "",
-        timeout: int = 30,
-    ) -> None:
-        warnings.warn(
-            "VikingVector is deprecated; use VikingDB instead.",
-            FutureWarning,
-            stacklevel=2,
-        )
-        super().__init__(
-            host=host,
-            region=region,
-            auth=auth,
-            scheme=scheme,
-            sts_token=sts_token,
-            timeout=timeout,
-        )
-
     def collection(
         self,
         *,
@@ -331,3 +302,32 @@ class VikingVector(VikingDB):
                 header,
             ),
         }
+
+
+@_deprecated("VikingVector is deprecated; use VikingDB instead.")
+class VikingVector(VikingDB):
+    """Deprecated alias for VikingDB."""
+
+    def __init__(
+        self,
+        *,
+        host: str,
+        region: str,
+        auth: Auth,
+        scheme: str = "https",
+        sts_token: str = "",
+        timeout: int = 30,
+    ) -> None:
+        warnings.warn(
+            "VikingVector is deprecated; use VikingDB instead.",
+            FutureWarning,
+            stacklevel=2,
+        )
+        super().__init__(
+            host=host,
+            region=region,
+            auth=auth,
+            scheme=scheme,
+            sts_token=sts_token,
+            timeout=timeout,
+        )
