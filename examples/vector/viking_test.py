@@ -15,7 +15,6 @@ import os
 import time
 
 import pytest
-from vikingdb import IAM
 from vikingdb.vector import (
     AggRequest,
     EmbeddingModelOpt,
@@ -37,6 +36,7 @@ from test_helper import (
     VECTOR_COLLECTION,
     VECTOR_INDEX,
     load_config,
+    build_client,
     embed_dense_vectors,
     build_story_chapters,
     chapters_to_upsert,
@@ -55,8 +55,8 @@ from test_helper import (
 @pytest.fixture(scope="module")
 def viking() -> VikingDB:
     cfg = load_config()
-    auth = IAM(ak=cfg.access_key, sk=cfg.secret_key)
-    return VikingDB(host=cfg.host, region=cfg.region, scheme=cfg.scheme, auth=auth, timeout=30)
+    client = build_client(cfg)
+    return client
 
 
 # Scenario 1 – Connectivity

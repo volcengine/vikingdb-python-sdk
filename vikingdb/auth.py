@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import Mapping
 from volcengine.Credentials import Credentials
 from volcengine.auth.SignerV4 import SignerV4
 
@@ -66,3 +67,18 @@ class APIKey(Auth):
 
     def sign_request(self, request) -> None:
         request.headers["Authorization"] = f"Bearer {self.api_key}"
+
+
+class HeaderAuth(Auth):
+    """Header-based authentication provider."""
+
+    def __init__(self, headers: Mapping[str, str]):
+        self.headers = headers
+
+    def initialize(self, *, service: str, region: str):
+        return None
+
+    def sign_request(self, request) -> None:
+        if self.headers:
+            for key, value in self.headers.items():
+                request.headers[key] = value
