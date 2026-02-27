@@ -95,9 +95,13 @@ class SearchByScalarRequest(SearchBase):
 
 
 class SearchByKeywordsRequest(SearchBase):
+    mode: Optional[str] = Field(default=None, alias="mode")
     keywords: Optional[Sequence[str]] = Field(default=None, alias="keywords")
     query: Optional[str] = Field(default=None, alias="query")
     case_sensitive: Optional[bool] = Field(default=None, alias="case_sensitive")
+    fields: Optional[Sequence[str]] = Field(default=None, alias="fields")
+    bm25_k1: Optional[float] = Field(default=None, alias="bm25_k1")
+    bm25_b: Optional[float] = Field(default=None, alias="bm25_b")
 
 
 class SearchByRandomRequest(SearchBase):
