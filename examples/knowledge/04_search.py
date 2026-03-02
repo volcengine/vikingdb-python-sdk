@@ -4,10 +4,12 @@ from vikingdb.auth import IAM, APIKey
 from vikingdb.knowledge.models.search import (
     SearchCollectionRequest,
     SearchKnowledgeRequest,
+    SearchKnowledgeResponse,
 )
-from vikingdb.knowledge.models.chat import ChatMessage, ChatCompletionRequest
-from vikingdb.knowledge.models.service_chat import ServiceChatRequest
+from vikingdb.knowledge.models.chat import ChatMessage, ChatCompletionRequest, ChatCompletionResponse
+from vikingdb.knowledge.models.service_chat import ServiceChatRequest, ServiceChatResponse
 from vikingdb.knowledge.exceptions import VikingKnowledgeException
+from typing import cast
 
 
 def init_client():
@@ -67,16 +69,38 @@ def run_search_knowledge():
     try:
         sk_res = kc.search_knowledge(sk_req)
         print("search_knowledge:", sk_res.model_dump(by_alias=True))
+        return sk_res
     except VikingKnowledgeException as e:
         print("search_knowledge_error:", e)
 
+def make_messages(search_knowledge_rsp: SearchKnowledgeResponse, query: str):
+    top_items = []
+    for item in search_knowledge_rsp.result.result_list[:5]:
+        title = item.chunk_title
+        content = item.content
+        top_items.append(f"【{title}】\n{content}")
 
-def run_chat_completion():
-    client = init_client()
+    context_text = "\n\n".join(top_items) if top_items else "（检索结果为空或不可用）"
+    system_prompt = (
+        "你是一位专业的财报分析师，"
+        "你需要根据「参考资料」来回答接下来的「用户问题」，这些信息在 <context></context> XML 标签之内。"
+        "回答必须在参考资料范围内，尽可能简洁，无法回答时请礼貌说明并引导提供更多信息。"
+        "\n\n<context>\n" + context_text + "\n</context>"
+    )
     msgs = [
-        ChatMessage(role="system", content="你是一位在线客服，根据<context>中的财报信息回答用户问题"),
-        ChatMessage(role="user", content=[{"type": "text", "text": "总结下 2025 Q1 收入表现"}]),
+        ChatMessage(role="system", content=system_prompt),
+        ChatMessage(role="user", content=query),
     ]
+    return msgs
+
+
+def run_search_knowledge_and_chat_completion():
+    client = init_client()
+
+    sk_res = cast(SearchKnowledgeResponse, run_search_knowledge())
+
+    msgs = make_messages(sk_res, "总结下 2025 Q1 财报数据")
+
     req = ChatCompletionRequest(
         model="Doubao-1-5-pro-32k",
         messages=msgs,
@@ -88,10 +112,34 @@ def run_chat_completion():
         stream=False,
     )
     try:
-        res = client.chat_completion(req)
+        res = cast(ChatCompletionResponse, client.chat_completion(req))
         print("chat_completion:", res.model_dump(by_alias=True))
     except VikingKnowledgeException as e:
         print("chat_completion_error:", e)
+
+def run_search_knowledge_and_chat_completion_stream():
+    client = init_client()
+    sk_res = cast(SearchKnowledgeResponse, run_search_knowledge())
+
+    msgs = make_messages(sk_res, "总结下 2025 Q1 财报数据")
+
+    req = ChatCompletionRequest(
+        model="Doubao-1-5-pro-32k",
+        messages=msgs,
+        thinking=None,
+        max_tokens=4096,
+        temperature=0.1,
+        return_token_usage=True,
+        api_key=os.getenv("VIKING_CHAT_API_KEY"),
+        stream=True,
+    )
+    try:
+        print("chat_completion_stream:")
+        for chunk in client.chat_completion(req):
+            print(chunk.result.generated_answer, end='')
+        print("\n")
+    except VikingKnowledgeException as e:
+        print("chat_completion_stream_error:", e)
 
 
 def run_service_chat():
@@ -105,11 +153,29 @@ def run_service_chat():
         stream=False,
     )
     try:
-        res = client.service_chat(req, timeout=120)
+        res = cast(ServiceChatResponse, client.service_chat(req, timeout=120))
 
         print("service_chat:", res.model_dump(by_alias=True))
     except VikingKnowledgeException as e:
         print("service_chat_error:", e)
+
+def run_service_chat_stream():
+    client = init_client_by_apikey()
+    service_rid = os.getenv("VIKING_SERVICE_RID")
+    msgs = [ChatMessage(role="user", content="列举 2025 Q1 财报里的三项亮点")]
+    req = ServiceChatRequest(
+        service_resource_id=service_rid,
+        messages=msgs,
+        query_param=None,
+        stream=True,
+    )
+    try:
+        print("service_chat_stream:")
+        for chunk in client.service_chat(req, timeout=120):
+            print(chunk.result.generated_answer, end='')
+        print("\n")
+    except VikingKnowledgeException as e:
+        print("service_chat_stream_error:", e)
 
 
 def run_rerank_ops():
@@ -134,6 +200,8 @@ def run_rerank_ops():
 if __name__ == "__main__":
     run_search_collection()
     run_search_knowledge()
-    run_chat_completion()
     run_service_chat()
+    run_service_chat_stream()
     run_rerank_ops()
+    run_search_knowledge_and_chat_completion()
+    run_search_knowledge_and_chat_completion_stream()

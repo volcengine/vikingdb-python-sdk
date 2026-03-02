@@ -6,6 +6,7 @@ This package provides an idiomatic Python interface to the VikingDB v2 data-plan
 - Simple client configuration with AK/SK signing (Volcano Engine V4) or API-key authentication.
 - **Vector Database**: Request envelope handling with typed request/response models covering collection, index, and embedding workflows.
 - **Memory Management**: Conversational memory APIs for managing user profiles, events, and session messages with semantic search capabilities.
+- **Knowledge Base**: Document and point CRUD with typed models, hybrid retrieval (`search_collection`, `search_knowledge`), rerank, and chat-completion/service-chat orchestration.
 - Pluggable retry strategy (exponential backoff with jitter) and per-request overrides (`RequestOptions`).
 - Executable example guides (`pytest` integration tests and standalone scripts) that demonstrate connectivity, CRUD, search, analytics, embedding, and memory management scenarios against a real VikingDB environment.
 
@@ -86,6 +87,40 @@ result = collection.search_memory(
 print("search results:", result)
 ```
 
+#### Knowledge Base
+
+```python
+import os
+from vikingdb import IAM, APIKey
+from vikingdb.knowledge import (
+    VikingKnowledge,
+    KnowledgeCollection,
+    SearchKnowledgeRequest,
+)
+
+# IAM auth for collection-level operations
+client = VikingKnowledge(
+    auth=IAM(ak=os.getenv("VOLC_AK"), sk=os.getenv("VOLC_SK")),
+    host="api-knowledgebase.mlp.cn-beijing.volces.com",
+    region="cn-beijing",
+    scheme="http",
+)
+
+collection = client.collection(
+    resource_id=os.getenv("VIKING_COLLECTION_RID"),
+    collection_name=os.getenv("VIKING_COLLECTION_NAME") or "financial_reports",
+    project_name=os.getenv("VIKING_PROJECT") or "default",
+)
+
+resp = collection.search_knowledge(
+    SearchKnowledgeRequest(query="2025 Q1 revenue growth", limit=5, dense_weight=0.5)
+)
+print(f"request_id={resp.request_id} hits={len(resp.result.result_list or [])}")
+
+# API-key auth for service-level chat
+svc_client = VikingKnowledge(auth=APIKey(api_key=os.getenv("VIKING_SERVICE_API_KEY")))
+```
+
 ### Example Guides
 
 #### Vector Examples
@@ -151,6 +186,40 @@ python examples/memory/02_add_session.py
 python examples/memory/03_search_memory.py
 ```
 
+#### Knowledge Examples
+
+The examples under `examples/knowledge` cover core knowledge base workflows:
+
+1. **01_init_client.py**: Initialize `VikingKnowledge` and obtain collections by resource ID or by name + project.
+2. **02_doc_crud.py**: Add documents via URL or TOS path (`add_doc_v2`), get/update metadata, list documents.
+3. **03_point_crud.py**: Add/update/delete points (chunks) within a document; list and fetch detailed point info.
+4. **04_search.py**: Perform collection search and knowledge search, invoke rerank, and orchestrate chat-completion or service-chat (including streaming).
+
+Environment variables:
+
+```
+VOLC_AK=your-access-key
+VOLC_SK=your-secret-key
+VIKING_PROJECT=project-name
+VIKING_COLLECTION_RID=collection-resource-id
+VIKING_COLLECTION_NAME=collection-name
+# For chat/service features:
+VIKING_CHAT_API_KEY=chat-api-key
+VIKING_SERVICE_API_KEY=service-api-key
+VIKING_SERVICE_RID=service-resource-id
+# Optional for rerank:
+VIKING_RERANK_INSTRUCTION=custom-instruction
+```
+
+Run individual examples:
+
+```bash
+python examples/knowledge/01_init_client.py
+python examples/knowledge/02_doc_crud.py
+python examples/knowledge/03_point_crud.py
+python examples/knowledge/04_search.py
+```
+
 ### Architecture Overview
 
 - `vikingdb._client`, `vikingdb.auth`, `vikingdb.request_options`, and `vikingdb.vector.exceptions` form the shared runtime used by all present and future SDK domains (vector, memory, knowledge).
@@ -158,6 +227,7 @@ python examples/memory/03_search_memory.py
 - Vector request/response models now surface directly from `vikingdb.vector` (backed internally by `vikingdb/vector/models`).
 - Memory APIs return plain dictionaries without object encapsulation, providing a lightweight interface for conversational memory management (session, profile, event operations).
 - Imports from the root package now focus on cross-cutting utilities (auth, config, request options), while application code should pull domain-specific functionality from `vikingdb.vector` or `vikingdb.memory` explicitly.
+- Knowledge base APIs surface typed pydantic models under `vikingdb.knowledge` for documents, points, search, rerank, and chat/service chat, with IAM and API-key authentication modes.
 
 ### Project Structure
 
@@ -183,6 +253,12 @@ vikingdb/
 │   ├── collection.py    # Memory collection operations
 │   ├── types.py         # Type definitions for memory operations
 │   └── exceptions.py    # Memory-specific exceptions
+├── knowledge/           # Knowledge base clients and models
+│   ├── __init__.py      # High-level knowledge client and exports
+│   ├── client.py        # VikingKnowledge service client
+│   ├── collection.py    # Document/point/search operations
+│   ├── exceptions.py    # Knowledge-specific exceptions
+│   └── models/          # Typed pydantic models (doc, point, search, chat, rerank)
 
 examples/
 ├── vector/              # Vector integration guides (pytest)
@@ -194,6 +270,11 @@ examples/
     ├── 01_init_client_and_collection.py
     ├── 02_add_session.py
     └── 03_search_memory.py
+└── knowledge/           # Knowledge base usage examples
+    ├── 01_init_client.py
+    ├── 02_doc_crud.py
+    ├── 03_point_crud.py
+    └── 04_search.py
 ```
 
 ### Contributing
