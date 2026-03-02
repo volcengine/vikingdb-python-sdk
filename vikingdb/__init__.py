@@ -19,6 +19,11 @@ from .memory import (
     VikingMem,
     Collection,
 )
+from .knowledge import (
+    VikingKnowledge,
+    KnowledgeCollection,
+)
+
 from .version import __version__
 __all__ = [
     "IAM",
@@ -34,5 +39,7 @@ __all__ = [
     "memory",
     "VikingMem",
     "Collection",
+    "VikingKnowledge",
+    "KnowledgeCollection",
     "__version__",
 ]

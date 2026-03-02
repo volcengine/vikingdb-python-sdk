@@ -5,14 +5,14 @@
 from __future__ import annotations
 
 import json
-from typing import Mapping, Optional, Union, Sequence, cast
+from typing import Mapping, Optional, Union, Sequence, Iterable
 
 from volcengine.ApiInfo import ApiInfo
 
 from .. import APIKey
 from .._client import Client, _REQUEST_ID_HEADER
 from ..auth import Auth
-from ..exceptions import VikingException, promote_exception
+from ..exceptions import VikingException, promote_exception, VikingAPIException
 from .exceptions import EXCEPTION_MAP, VikingKnowledgeException
 from ..version import __version__
 from .models.base import CollectionMeta, Model
@@ -90,6 +90,16 @@ class VikingKnowledge(Client):
             raise VikingKnowledgeException(1000028, "missed", "empty response due to unknown error", status_code=None)
         return res
 
+    def stream_json_exception(self, api, params, body, headers=None, timeout=None):
+        try:
+            for item in self._stream_json(api, params, body, headers=headers, timeout=timeout):
+                yield item
+        except VikingException as exc:
+            raise promote_exception(exc, exception_map=EXCEPTION_MAP, default_cls=VikingKnowledgeException) from None
+        except Exception as exc:
+            raise exc
+        return
+
     async def async_json_exception(self, api, params, body, headers=None, timeout=None):
         try:
             res = await self.async_json(api, params, body, headers=headers, timeout=timeout)
@@ -146,15 +156,20 @@ class VikingKnowledge(Client):
         *,
         headers: Optional[Mapping[str, str]] = None,
         timeout: Optional[int] = None,
-    ) -> ChatCompletionResponse:
+    ) -> Union[ChatCompletionResponse, Iterable[ChatCompletionResponse]]:
         payload = (
             request.model_dump(by_alias=True, exclude_none=True)  # type: ignore[attr-defined]
             if isinstance(request, ChatCompletionRequest)
             else dict(request)
         )
-        res = self.json_exception("ChatCompletion", {}, json.dumps(payload), headers=headers, timeout=timeout)
-        response = ChatCompletionResponse.parse_with(res)
-        return response
+        if bool(payload.get("stream")):
+            def _gen():
+                for res in self.stream_json_exception("ChatCompletion", {}, json.dumps(payload), headers=headers, timeout=timeout):
+                    yield ChatCompletionResponse.parse_with(res)
+            return _gen()
+        else:
+            res = self.json_exception("ChatCompletion", {}, json.dumps(payload), headers=headers, timeout=timeout)
+            return ChatCompletionResponse.parse_with(res)
 
     def service_chat(
         self,
@@ -162,13 +177,17 @@ class VikingKnowledge(Client):
         *,
         headers: Optional[Mapping[str, str]] = None,
         timeout: Optional[int] = None,
-    ) -> ServiceChatResponse:
+    ) -> Union[ServiceChatResponse, Iterable[ServiceChatResponse]]:
         payload = (
             request.model_dump(by_alias=True, exclude_none=True)  # type: ignore[attr-defined]
             if isinstance(request, ServiceChatRequest)
             else dict(request)
         )
-        req_headers = dict(headers or {})
-        res = self.json_exception("ServiceChat", {}, json.dumps(payload), headers=req_headers, timeout=timeout)
-        response = ServiceChatResponse.parse_with(res)
-        return response
+        if bool(payload.get("stream")):
+            def _gen():
+                for res in self.stream_json_exception("ServiceChat", {}, json.dumps(payload), headers=headers, timeout=timeout):
+                    yield ServiceChatResponse.parse_with(res)
+            return _gen()
+        else:
+            res = self.json_exception("ServiceChat", {}, json.dumps(payload), headers=headers, timeout=timeout)
+            return ServiceChatResponse.parse_with(res)

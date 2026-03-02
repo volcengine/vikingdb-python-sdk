@@ -260,3 +260,56 @@ class Client(Service, ABC):
                     request_id=request_id,
                     message=f"failed to run aiohttp {api}: {exc}",
                 ) from exc
+
+
+    def _stream_json(self, api, params, body, headers=None, timeout=None):
+        if api not in self.api_info:
+            raise Exception("no such api")
+        api_info = self.api_info[api]
+        request = self.prepare_request(api_info, params)
+        if headers:
+            for key, value in headers.items():
+                request.headers[key] = value
+        request.headers["Content-Type"] = "application/json"
+        request.headers["Accept"] = "text/event-stream"
+        request.body = body
+        self.auth_provider.sign_request(request)
+        url = request.build()
+        request_id_value = request.headers.get(_REQUEST_ID_HEADER)
+        request_id = str(request_id_value) if request_id_value else "unknown"
+        if timeout is not None:
+            request_timeout = (timeout, timeout)
+        else:
+            request_timeout = (
+                self.service_info.connection_timeout,
+                self.service_info.socket_timeout,
+            )
+        response = self.session.post(
+            url,
+            headers=request.headers,
+            data=request.body,
+            stream=True,
+            timeout=request_timeout,
+        )
+        if response.status_code != 200:
+            payload_text_attr = getattr(response, "text", "")
+            payload_text = payload_text_attr if isinstance(payload_text_attr, str) else ""
+            payload_text = payload_text or ""
+            raise VikingAPIException.from_response(
+                payload_text,
+                request_id=request_id,
+                status_code=response.status_code,
+            )
+        for line in response.iter_lines():
+            s = line.decode("utf-8")
+            if not s:
+                continue
+            if s.startswith("data:"):
+                data_str = s.split("data:", 1)[1]
+                data = json.loads(data_str)
+                yield data
+                try:
+                    if "end" in data.get("data", {}):
+                        break
+                except Exception:
+                    pass
