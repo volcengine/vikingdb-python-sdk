@@ -20,6 +20,7 @@ class FetchDataInIndexRequest(Model):
 class IndexDataItem(DataItem):
     dense_dim: Optional[int] = Field(default=None, alias="dense_dim")
     dense_vector: Optional[List[float]] = Field(default=None, alias="dense_vector")
+    sparse_vector: Optional[Dict[str, float]] = Field(default=None, alias="sparse_vector")
 
 
 class FetchDataInIndexResult(Model):
