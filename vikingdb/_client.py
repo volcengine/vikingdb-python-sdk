@@ -144,7 +144,7 @@ class Client(Service, ABC):
             response = self.session.post(
                 url,
                 headers=request.headers,
-                data=request.body,
+                data=request.body.encode("utf-8"),
                 timeout=request_timeout,
             )
         except Exception as exc:
@@ -154,9 +154,7 @@ class Client(Service, ABC):
                     message=f"failed to run session.post {api}: {exc}",
                 ) from exc
 
-        payload_text_attr = getattr(response, "text", "")
-        payload_text = payload_text_attr if isinstance(payload_text_attr, str) else ""
-        payload_text = payload_text or ""
+        payload_text = response.content.decode("utf-8", errors="replace") if response.content else ""
 
         if response.status_code != 200:
             error = VikingAPIException.from_response(
@@ -167,7 +165,7 @@ class Client(Service, ABC):
             raise error
 
         try:
-            return response.json()
+            return json.loads(response.content.decode("utf-8"))
         except (ValueError, JSONDecodeError) as exc:
             raise VikingAPIException(
                 DEFAULT_UNKNOWN_ERROR_CODE,
@@ -287,14 +285,12 @@ class Client(Service, ABC):
         response = self.session.post(
             url,
             headers=request.headers,
-            data=request.body,
+            data=request.body.encode("utf-8"),
             stream=True,
             timeout=request_timeout,
         )
         if response.status_code != 200:
-            payload_text_attr = getattr(response, "text", "")
-            payload_text = payload_text_attr if isinstance(payload_text_attr, str) else ""
-            payload_text = payload_text or ""
+            payload_text = response.content.decode("utf-8", errors="replace") if response.content else ""
             raise VikingAPIException.from_response(
                 payload_text,
                 request_id=request_id,
