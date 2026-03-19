@@ -8,7 +8,7 @@ import json
 from typing import Mapping, Optional, Union, List
 import warnings
 
-from .models.base import CollectionMeta, Model
+from .models.base import CollectionMeta, CommonResponse, Model
 from .models.doc import DocInfo, ListDocsResponse, AddDocRequest, ListDocsRequest, MetaItem, AddDocV2Request, AddDocResponse
 from .models.point import (
     ListPointsResponse,
@@ -74,10 +74,11 @@ class KnowledgeCollection:
         *,
         headers: Optional[Mapping[str, str]] = None,
         timeout: Optional[int] = None,
-    ):
+    ) -> CommonResponse:
         payload = {**self._meta_payload, "doc_id": doc_id}
         res = self.client.json_exception("DeleteDoc", {}, json.dumps(payload), headers=headers, timeout=timeout)
-        return res
+        response = CommonResponse.model_validate(res)
+        return response
 
     def get_doc(
         self,
@@ -123,10 +124,11 @@ class KnowledgeCollection:
         *,
         headers: Optional[Mapping[str, str]] = None,
         timeout: Optional[int] = None,
-    ):
+    ) -> CommonResponse:
         payload = {**self._meta_payload, "doc_id": doc_id, "meta": [item.model_dump(by_alias=True) for item in meta]}
         res = self.client.json_exception("UpdateDocMeta", {}, json.dumps(payload), headers=headers, timeout=timeout)
-        return res
+        response = CommonResponse.model_validate(res)
+        return response
 
     def update_doc(
         self,
@@ -135,10 +137,11 @@ class KnowledgeCollection:
         *,
         headers: Optional[Mapping[str, str]] = None,
         timeout: Optional[int] = None,
-    ):
+    ) -> CommonResponse:
         payload = {**self._meta_payload, "doc_id": doc_id, "doc_name": doc_name}
         res = self.client.json_exception("UpdateDoc", {}, json.dumps(payload), headers=headers, timeout=timeout)
-        return res
+        response = CommonResponse.model_validate(res)
+        return response
 
     def get_point(
         self,
@@ -183,7 +186,7 @@ class KnowledgeCollection:
         *,
         headers: Optional[Mapping[str, str]] = None,
         timeout: Optional[int] = None,
-    ):
+    ) -> PointAddResponse:
         req_payload = (
             request.model_dump(by_alias=True, exclude_none=True)  # type: ignore[attr-defined]
             if isinstance(request, Model)
@@ -201,7 +204,7 @@ class KnowledgeCollection:
         *,
         headers: Optional[Mapping[str, str]] = None,
         timeout: Optional[int] = None,
-    ):
+    ) -> CommonResponse:
         upd_payload = (
             update.model_dump(by_alias=True, exclude_none=True)  # type: ignore[attr-defined]
             if isinstance(update, Model)
@@ -209,7 +212,8 @@ class KnowledgeCollection:
         )
         payload = {**self._meta_payload, "point_id": point_id, **upd_payload}
         res = self.client.json_exception("UpdatePoint", {}, json.dumps(payload), headers=headers, timeout=timeout)
-        return res
+        response = CommonResponse.model_validate(res)
+        return response
 
     def delete_point(
         self,
@@ -217,7 +221,7 @@ class KnowledgeCollection:
         *,
         headers: Optional[Mapping[str, str]] = None,
         timeout: Optional[int] = None,
-    ):
+    ) -> CommonResponse:
         req_payload = (
             request.model_dump(by_alias=True, exclude_none=True)  # type: ignore[attr-defined]
             if isinstance(request, Model)
@@ -225,7 +229,8 @@ class KnowledgeCollection:
         )
         payload = {**self._meta_payload, **req_payload}
         res = self.client.json_exception("DeletePoint", {}, json.dumps(payload), headers=headers, timeout=timeout)
-        return res
+        response = CommonResponse.model_validate(res)
+        return response
 
     def search_collection(
         self,

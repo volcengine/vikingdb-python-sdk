@@ -54,8 +54,8 @@ class UpdatePointRequest(Model):
 class ListPointsRequest(Model):
     offset: int = Field(default=0, alias="offset")
     limit: int = Field(default=-1, alias="limit")
-    doc_ids: Optional[Dict[str, Any]] = Field(default=None, alias="doc_ids")
-    point_ids: Optional[Dict[str, Any]] = Field(default=None, alias="point_ids")
+    doc_ids: Optional[List[str]] = Field(default=None, alias="doc_ids")
+    point_ids: Optional[List[str]] = Field(default=None, alias="point_ids")
     get_attachment_link: Optional[bool] = Field(default=False, alias="get_attachment_link")
 
 class DeletePointRequest(Model):
