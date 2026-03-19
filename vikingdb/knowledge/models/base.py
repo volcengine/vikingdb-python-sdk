@@ -29,10 +29,10 @@ class CollectionMeta(Model):
 
 
 class CommonResponse(Model):
-    api: Optional[str] = Field(default=None, alias="api")
+    code: Optional[int] = Field(default=None, alias="code")
     message: Optional[str] = Field(default=None, alias="message")
-    code: Optional[str] = Field(default=None, alias="code")
     request_id: Optional[str] = Field(default=None, alias="request_id")
+    data: Optional[Any] = Field(default=None, alias="data")
 
 
 class DataApiResponse(Model):

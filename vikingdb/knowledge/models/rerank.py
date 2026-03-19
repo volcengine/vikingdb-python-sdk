@@ -18,7 +18,7 @@ __all__ = [
 
 class RerankDataItem(Model):
     query: object = Field(alias="query")
-    content: str = Field(alias="content")
+    content: str = Field(default=None, alias="content")
     title: Optional[str] = Field(default=None, alias="title")
     image: Union[str, List[str]] = Field(default=None, alias="image")
 
