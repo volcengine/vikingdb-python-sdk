@@ -12,12 +12,14 @@ from .embedding import FullModalData
 
 
 class RerankRequest(Model):
+    project_name: Optional[str] = Field(default=None, alias="project_name")
     model_name: Optional[str] = Field(alias="model_name")
     model_version: Optional[str] = Field(default=None, alias="model_version")
     data: Sequence[Sequence[FullModalData]] = Field(alias="data")
     query: Sequence[FullModalData] = Field(alias="query")
     instruction: Optional[str] = Field(default=None, alias="instruction")
     return_origin_data: Optional[bool] = Field(default=None, alias="return_origin_data")
+    max_retry_time: Optional[int] = Field(default=None, alias="max_retry_time")
 
 
 class RerankResult(Model):

@@ -40,6 +40,7 @@ class UpdateDataResult(Model):
 class DeleteDataRequest(Model):
     ids: Optional[Sequence[Any]] = Field(default=None, alias="ids")
     delete_all: Optional[bool] = Field(default=None, alias="del_all")
+    async_write: Optional[bool] = Field(default=None, alias="async")
 
 
 class DeleteDataResponse(DataApiResponse):
@@ -48,6 +49,8 @@ class DeleteDataResponse(DataApiResponse):
 
 class FetchDataInCollectionRequest(Model):
     ids: Sequence[Any] = Field(alias="ids")
+    return_download_url: Optional[bool] = Field(default=None, alias="return_download_url")
+    return_analyzed_result: Optional[bool] = Field(default=None, alias="return_analyzed_result")
 
 
 class FetchDataInCollectionResult(Model):
