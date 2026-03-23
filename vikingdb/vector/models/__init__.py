@@ -26,6 +26,7 @@ from .collection import (
 from .embedding import (
     Embedding,
     EmbeddingData,
+    EmbeddingInstruction,
     EmbeddingModelOpt,
     EmbeddingRequest,
     EmbeddingResponse,
@@ -46,6 +47,8 @@ from .index import (
     FetchDataInIndexResponse,
     FetchDataInIndexResult,
     IndexDataItem,
+    Instruction,
+    ModelRerank,
     SearchAdvance,
     SearchByIDRequest,
     SearchByKeywordsRequest,
@@ -56,6 +59,7 @@ from .index import (
     SearchItemResult,
     SearchResponse,
     SearchResult,
+    TensorRerank,
 )
 
 __all__ = [
@@ -69,6 +73,7 @@ __all__ = [
     "DeleteDataResponse",
     "Embedding",
     "EmbeddingData",
+    "EmbeddingInstruction",
     "EmbeddingModelOpt",
     "EmbeddingRequest",
     "EmbeddingResponse",
@@ -86,6 +91,8 @@ __all__ = [
     "FullModalData",
     "IndexDataItem",
     "IndexMeta",
+    "Instruction",
+    "ModelRerank",
     "PaginationResponse",
     "SearchAdvance",
     "SearchByIDRequest",
@@ -97,6 +104,7 @@ __all__ = [
     "SearchItemResult",
     "SearchResponse",
     "SearchResult",
+    "TensorRerank",
     "UpsertDataRequest",
     "UpsertDataResponse",
     "UpsertDataResult",

@@ -53,6 +53,30 @@ class SearchBase(RecallBase):
     limit: Optional[int] = Field(default=None, alias="limit")
     offset: Optional[int] = Field(default=None, alias="offset")
     advance: Optional[SearchAdvance] = Field(default=None, alias="advance")
+    return_schema: Optional[bool] = Field(default=None, alias="return_schema")
+    return_download_url: Optional[bool] = Field(default=None, alias="return_download_url")
+    return_analyzed_result: Optional[bool] = Field(default=None, alias="return_analyzed_result")
+    return_detail_info: Optional[bool] = Field(default=None, alias="return_detail_info")
+
+
+class Instruction(Model):
+    auto_fill: Optional[bool] = Field(default=None, alias="auto_fill")
+
+
+class TensorRerank(Model):
+    tensor: Optional[Sequence[Sequence[float]]] = Field(default=None, alias="tensor")
+    input_limit: Optional[int] = Field(default=None, alias="input_limit")
+    max_similarity_algo: Optional[str] = Field(default=None, alias="max_similarity_algo")
+
+
+class ModelRerank(Model):
+    model_name: Optional[str] = Field(default=None, alias="model_name")
+    model_version: Optional[str] = Field(default=None, alias="model_version")
+    instruction: Optional[str] = Field(default=None, alias="instruction")
+    input_limit: Optional[int] = Field(default=None, alias="input_limit")
+    score_threshold: Optional[float] = Field(default=None, alias="score_threshold")
+    fail_strategy: Optional[str] = Field(default=None, alias="fail_strategy")
+    timeout_ms: Optional[int] = Field(default=None, alias="timeout_ms")
 
 
 class SearchItemResult(Model):
@@ -60,6 +84,8 @@ class SearchItemResult(Model):
     fields: Dict[str, Any] = Field(default_factory=dict, alias="fields")
     ann_score: Optional[float] = Field(default=None, alias="ann_score")
     score: Optional[float] = Field(default=None, alias="score")
+    origin_score: Optional[float] = Field(default=None, alias="origin_score")
+    addition_score: Optional[float] = Field(default=None, alias="addition_score")
 
 
 class SearchResult(Model):
@@ -68,6 +94,14 @@ class SearchResult(Model):
     total_return_count: Optional[int] = Field(default=None, alias="total_return_count")
     real_text_query: Optional[str] = Field(default=None, alias="real_text_query")
     token_usage: Dict[str, Any] = Field(default_factory=dict, alias="token_usage")
+    schema: Optional[Mapping[str, Any]] = Field(default=None, alias="schema")
+    rerank_error: Optional[str] = Field(default=None, alias="rerank_error")
+    instruction_for_dense: Optional[str] = Field(default=None, alias="instruction_for_dense")
+    instruction_for_sparse: Optional[str] = Field(default=None, alias="instruction_for_sparse")
+    instruction_for_tensor: Optional[str] = Field(default=None, alias="instruction_for_tensor")
+    embedding_time_cost_ms: Optional[int] = Field(default=None, alias="embedding_time_cost_ms")
+    recall_time_cost_ms: Optional[int] = Field(default=None, alias="recall_time_cost_ms")
+    rerank_time_cost_ms: Optional[int] = Field(default=None, alias="rerank_time_cost_ms")
 
 
 class SearchResponse(DataApiResponse):
@@ -77,6 +111,7 @@ class SearchResponse(DataApiResponse):
 class SearchByVectorRequest(SearchBase):
     dense_vector: Sequence[float] = Field(alias="dense_vector")
     sparse_vector: Optional[Mapping[str, float]] = Field(default=None, alias="sparse_vector")
+    tensor_rerank: Optional[TensorRerank] = Field(default=None, alias="tensor_rerank")
 
 
 class SearchByMultiModalRequest(SearchBase):
@@ -84,6 +119,9 @@ class SearchByMultiModalRequest(SearchBase):
     image: Optional[Any] = Field(default=None, alias="image")
     video: Optional[Any] = Field(default=None, alias="video")
     need_instruction: Optional[bool] = Field(default=None, alias="need_instruction")
+    instruction: Optional[Instruction] = Field(default=None, alias="instruction")
+    tensor_rerank: Optional[TensorRerank] = Field(default=None, alias="tensor_rerank")
+    rerank: Optional[ModelRerank] = Field(default=None, alias="rerank")
 
 
 class SearchByIDRequest(SearchBase):
@@ -124,4 +162,3 @@ class AggResult(Model):
 
 class AggResponse(DataApiResponse):
     result: Optional[AggResult] = None
-
