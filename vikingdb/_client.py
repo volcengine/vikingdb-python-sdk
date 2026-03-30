@@ -54,9 +54,9 @@ class Client(Service, ABC):
         )
         self.api_info = self._build_api_info()
         # 判断auth是不是IAM 还是 APIKey类型
-        if isinstance(auth, IAM):
-            super().__init__(self.service_info, self.api_info)
-        elif isinstance(auth, (APIKey, HeaderAuth)):
+        if isinstance(auth, (IAM, APIKey, HeaderAuth)):
+            # volcengine Service.init() 可能读取环境变量或 ~/.volc/config 覆盖 AK/SK，
+            # 这里确保使用用户传入的 IAM 凭证，因此不使用super().__init__初始化
             self.session = requests.session()
         else:
             raise ValueError("auth must be IAM, APIKey or HeaderAuth type")
