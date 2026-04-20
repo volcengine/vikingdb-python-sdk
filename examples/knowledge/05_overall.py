@@ -1,16 +1,15 @@
 import os
 import sys
-from vikingdb.auth import IAM
+from vikingdb.auth import APIKey
 from vikingdb.knowledge import VikingKnowledge
 from vikingdb.knowledge.exceptions import VikingKnowledgeException
 from vikingdb.knowledge.models.doc import AddDocV2Request
-from vikingdb.knowledge.models.search import SearchKnowledgeRequest
-from vikingdb.knowledge.models.chat import ChatMessage, ChatCompletionRequest, ChatCompletionResponse
+from vikingdb.knowledge.models.chat import ChatMessage
+from vikingdb.knowledge.models.service_chat import ServiceChatRequest
 
 
 def main():
-    access_key = os.environ["VIKINGDB_AK"]
-    secret_key = os.environ["VIKINGDB_SK"]
+    api_key = os.environ["VIKING_API_KEY"]
 
     endpoint = "api-knowledgebase.mlp.cn-beijing.volces.com"
     region = "cn-beijing"
@@ -18,7 +17,7 @@ def main():
     client = VikingKnowledge(
         host=endpoint,
         region=region,
-        auth=IAM(ak=access_key, sk=secret_key),
+        auth=APIKey(api_key=api_key),
         scheme="https",
     )
 
@@ -50,43 +49,14 @@ def main():
     print("add url doc id:", rsp.result.doc_id)
 
     query = "your query"
-    resp = collection.search_knowledge(
-        SearchKnowledgeRequest(
-            query=query,
-            limit=10,
-            dense_weight=0.5,
-        )
-    )
-
-    top_items = []
-    for item in resp.result.result_list[:5]:
-        title = item.chunk_title
-        content = item.content
-        top_items.append(f"【{title}】\n{content}")
-
-    context_text = "\n\n".join(top_items) if top_items else "（检索结果为空或不可用）"
-    system_prompt = (
-        "你是一位专业的财报分析师，"
-        "你需要根据「参考资料」来回答接下来的「用户问题」，这些信息在 <context></context> XML 标签之内。"
-        "回答必须在参考资料范围内，尽可能简洁，无法回答时请礼貌说明并引导提供更多信息。"
-        "\n\n<context>\n" + context_text + "\n</context>"
-    )
-    msgs = [
-        ChatMessage(role="system", content=system_prompt),
-        ChatMessage(role="user", content=query),
-    ]
-
-    req = ChatCompletionRequest(
-        model="Doubao-1-5-pro-32k",
-        messages=msgs,
-        thinking=None,
-        max_tokens=4096,
-        temperature=0.1,
-        return_token_usage=True,
+    req = ServiceChatRequest(
+        service_resource_id=os.environ["VIKING_SERVICE_RID"],
+        messages=[ChatMessage(role="user", content=query)],
+        query_param=None,
         stream=False,
     )
-    res = client.chat_completion(req)
-    print("chat_completion:", res.model_dump(by_alias=True))
+    res = client.service_chat(req, timeout=120)
+    print("service_chat:", res.model_dump(by_alias=True))
 
 
 
