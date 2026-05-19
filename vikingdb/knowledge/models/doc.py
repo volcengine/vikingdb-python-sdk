@@ -63,6 +63,7 @@ class AddDocV2Request(Model):
     description: Optional[str] = Field(default=None, alias="description")
     tag_list: Optional[List[MetaItem]] = Field(default=None, alias="tag_list")
     uri: Optional[str] = Field(default=None, alias="uri")
+    path_segments: Optional[List[str]] = Field(default=None, alias="path_segments")
 
 class DedupInfo(Model):
     skip: Optional[bool] = Field(default=None, alias="skip")
