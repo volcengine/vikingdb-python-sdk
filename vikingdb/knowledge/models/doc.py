@@ -13,6 +13,7 @@ from .base import DataApiResponse, Model
 __all__ = [
     "AddDocRequest",
     "ListDocsRequest",
+    "LarkFile",
     "MetaItem",
     "DedupOptions",
     "DedupInfo",
@@ -34,6 +35,12 @@ class ListDocsRequest(Model):
     filter: Optional[Dict[str, Any]] = Field(default=None, alias="filter")
     return_token_usage: Optional[bool] = Field(default=False, alias="return_token_usage")
 
+class LarkFile(Model):
+    url: Optional[str] = Field(default=None, alias="url")
+    obj_type: Optional[str] = Field(default=None, alias="obj_type")
+    obj_token: Optional[str] = Field(default=None, alias="obj_token")
+    include_child: Optional[bool] = Field(default=None, alias="include_child")
+
 class AddDocRequest(Model):
     add_type: str = Field(alias="add_type")
     doc_id: Optional[str] = Field(default=None, alias="doc_id")
@@ -42,7 +49,7 @@ class AddDocRequest(Model):
     description: Optional[str] = Field(default=None, alias="description")
     tos_path: Optional[str] = Field(default=None, alias="tos_path")
     url: Optional[str] = Field(default=None, alias="url")
-    lark_file: Optional[str] = Field(default=None, alias="lark_file")
+    lark_file: Optional["LarkFile"] = Field(default=None, alias="lark_file")
     meta: Optional[List["MetaItem"]] = Field(default=None, alias="meta")
     dedup: Optional["DedupOptions"] = Field(default=None, alias="dedup")
 
