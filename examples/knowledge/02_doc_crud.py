@@ -2,9 +2,12 @@ import os
 import json
 import time
 from typing import List
+import sys
+sys.path.insert(0, "../..")
+
 from vikingdb.knowledge import VikingKnowledge
 from vikingdb.auth import IAM
-from vikingdb.knowledge import AddDocV2Request, ListDocsRequest, MetaItem
+from vikingdb.knowledge import AddDocV2Request, ListDocsFilter, ListDocsRequest, ListDocsV2Request, SearchDocsByFilterRequest, MetaItem
 
 
 def init_client():
@@ -88,9 +91,25 @@ def run_doc_crud():
     upd_doc_res = kc.update_doc(doc_id, new_name)
     print("update_doc:", upd_doc_res)
 
-    list_req = ListDocsRequest(offset=0, limit=10, return_token_usage=True)
+    list_req = ListDocsRequest(
+        offset=0,
+        limit=10,
+        filter=ListDocsFilter(doc_id_list=[doc_id]),
+        return_token_usage=True,
+    )
     list_res = kc.list_docs(list_req)
     print("list_docs:", list_res.result.model_dump(by_alias=True))
+
+    list_v2_req = ListDocsV2Request(limit=2)
+    list_v2_res = kc.list_docs_v2(list_v2_req)
+    print("list_docs_v2:", list_v2_res.result.model_dump(by_alias=True))
+
+    search_by_filter_req = SearchDocsByFilterRequest(
+        filter={"op": "must", "field": "category", "conds": ["financial_report"]},
+        limit=10,
+    )
+    search_by_filter_res = kc.search_docs_by_filter(search_by_filter_req)
+    print("search_docs_by_filter:", search_by_filter_res.result.model_dump(by_alias=True))
 
     #del_res = kc.delete_doc(doc_id)
     #print("delete_doc:", del_res)

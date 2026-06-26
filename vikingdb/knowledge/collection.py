@@ -9,7 +9,7 @@ from typing import Mapping, Optional, Union, List
 import warnings
 
 from .models.base import CollectionMeta, CommonResponse, Model
-from .models.doc import DocInfo, ListDocsResponse, AddDocRequest, ListDocsRequest, MetaItem, AddDocV2Request, AddDocResponse
+from .models.doc import DocInfo, ListDocsResponse, ListDocsV2Response, SearchDocsByFilterResponse, AddDocRequest, ListDocsRequest, ListDocsV2Request, SearchDocsByFilterRequest, MetaItem, AddDocV2Request, AddDocResponse
 from .models.point import (
     ListPointsResponse,
     PointInfo,
@@ -115,6 +115,40 @@ class KnowledgeCollection:
         payload: dict = {**self._meta_payload, **req_payload}
         res = self.client.json_exception("ListDocs", {}, json.dumps(payload), headers=headers, timeout=timeout)
         response = ListDocsResponse.parse_with(res)
+        return response
+
+    def list_docs_v2(
+        self,
+        request: Union[ListDocsV2Request, Mapping[str, object]],
+        *,
+        headers: Optional[Mapping[str, str]] = None,
+        timeout: Optional[int] = None,
+    ) -> ListDocsV2Response:
+        req_payload = (
+            request.model_dump(by_alias=True, exclude_none=True)  # type: ignore[attr-defined]
+            if isinstance(request, Model)
+            else dict(request)
+        )
+        payload: dict = {**self._meta_payload, **req_payload}
+        res = self.client.json_exception("ListDocsV2", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        response = ListDocsV2Response.parse_with(res)
+        return response
+
+    def search_docs_by_filter(
+        self,
+        request: Union[SearchDocsByFilterRequest, Mapping[str, object]],
+        *,
+        headers: Optional[Mapping[str, str]] = None,
+        timeout: Optional[int] = None,
+    ) -> SearchDocsByFilterResponse:
+        req_payload = (
+            request.model_dump(by_alias=True, exclude_none=True)  # type: ignore[attr-defined]
+            if isinstance(request, Model)
+            else dict(request)
+        )
+        payload: dict = {**self._meta_payload, **req_payload}
+        res = self.client.json_exception("SearchDocsByFilter", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        response = SearchDocsByFilterResponse.parse_with(res)
         return response
 
     def update_doc_meta(

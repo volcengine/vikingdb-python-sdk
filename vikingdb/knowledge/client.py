@@ -66,6 +66,8 @@ class VikingKnowledge(Client):
             "DeleteDoc": ApiInfo("POST", "/api/knowledge/doc/delete", {}, {}, header),
             "GetDocInfo": ApiInfo("POST", "/api/knowledge/doc/info", {}, {}, header),
             "ListDocs": ApiInfo("POST", "/api/knowledge/doc/list", {}, {}, header),
+            "ListDocsV2": ApiInfo("POST", "/api/knowledge/doc/v2/list", {}, {}, header),
+            "SearchDocsByFilter": ApiInfo("POST", "/api/knowledge/doc/v2/search_by_filter", {}, {}, header),
             "UpdateDocMeta": ApiInfo("POST", "/api/knowledge/doc/update_meta", {}, {}, header),
             "UpdateDoc": ApiInfo("POST", "/api/knowledge/doc/update", {}, {}, header),
             # Point

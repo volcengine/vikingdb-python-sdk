@@ -13,6 +13,9 @@ from .base import DataApiResponse, Model
 __all__ = [
     "AddDocRequest",
     "ListDocsRequest",
+    "ListDocsFilter",
+    "ListDocsV2Request",
+    "SearchDocsByFilterRequest",
     "LarkFile",
     "MetaItem",
     "DedupOptions",
@@ -24,16 +27,31 @@ __all__ = [
     "DocInfo",
     "ListDocsResult",
     "ListDocsResponse",
+    "ListDocsV2Result",
+    "ListDocsV2Response",
+    "SearchDocsByFilterResult",
+    "SearchDocsByFilterResponse",
     "AddDocResponseData",
     "AddDocResponse",
 ]
+
+class ListDocsFilter(Model):
+    doc_id_list: Optional[List[str]] = Field(default=None, alias="doc_id_list")
 
 class ListDocsRequest(Model):
     offset: int = Field(default=0, alias="offset")
     limit: int = Field(default=-1, alias="limit")
     doc_type: Optional[str] = Field(default=None, alias="doc_type")
-    filter: Optional[Dict[str, Any]] = Field(default=None, alias="filter")
+    filter: Optional["ListDocsFilter"] = Field(default=None, alias="filter")
     return_token_usage: Optional[bool] = Field(default=False, alias="return_token_usage")
+
+class ListDocsV2Request(Model):
+    limit: Optional[int] = Field(default=None, alias="limit")
+    next_token: Optional[str] = Field(default=None, alias="next_token")
+
+class SearchDocsByFilterRequest(Model):
+    filter: Dict[str, Any] = Field(alias="filter")
+    limit: Optional[int] = Field(default=None, alias="limit")
 
 class LarkFile(Model):
     url: Optional[str] = Field(default=None, alias="url")
@@ -126,6 +144,28 @@ class ListDocsResult(Model):
 
 class ListDocsResponse(DataApiResponse):
     result: Optional[ListDocsResult] = None
+
+class ListDocsV2Result(Model):
+    collection_name: Optional[str] = Field(default=None, alias="collection_name")
+    doc_list: Sequence[DocInfo] = Field(default_factory=list, alias="doc_list")
+    count: Optional[int] = Field(default=None, alias="count")
+    total_num: Optional[int] = Field(default=None, alias="total_num")
+    has_more: Optional[bool] = Field(default=None, alias="has_more")
+    next_token: Optional[str] = Field(default=None, alias="next_token")
+
+
+class ListDocsV2Response(DataApiResponse):
+    result: Optional[ListDocsV2Result] = None
+
+class SearchDocsByFilterResult(Model):
+    collection_name: Optional[str] = Field(default=None, alias="collection_name")
+    doc_list: Sequence[DocInfo] = Field(default_factory=list, alias="doc_list")
+    count: Optional[int] = Field(default=None, alias="count")
+    total_num: Optional[int] = Field(default=None, alias="total_num")
+
+
+class SearchDocsByFilterResponse(DataApiResponse):
+    result: Optional[SearchDocsByFilterResult] = None
 
 class AddDocResponseData(Model):
     collection_name: Optional[str] = Field(default=None, alias="collection_name")
