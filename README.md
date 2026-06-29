@@ -280,3 +280,8 @@ examples/
 ### Contributing
 
 Contributions and feedback are welcome. Please ensure any new APIs match the OpenAPI specification and include accompanying example coverage.
+
+## Security and privacy
+
+This project takes security seriously.
+For vulnerability reporting and supported versions, see [SECURITY.md](SECURITY.md).
