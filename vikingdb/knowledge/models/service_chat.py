@@ -9,6 +9,7 @@ from typing import Any, Dict, Optional, Sequence, List
 from pydantic import Field
 
 from .base import DataApiResponse, Model
+from .search import QueryParam
 from .point import ChunkAttachment, PointTableChunkField
 from .chat import ChatMessage
 
@@ -24,7 +25,7 @@ __all__ = [
 class ServiceChatRequest(Model):
     service_resource_id: str = Field(alias="service_resource_id")
     messages: Sequence[ChatMessage] = Field(alias="messages")
-    query_param: Optional[Dict[str, Any]] = Field(default=None, alias="query_param")
+    query_param: Optional[QueryParam] = Field(default=None, alias="query_param")
     stream: Optional[bool] = Field(default=False, alias="stream")
 
 

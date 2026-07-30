@@ -2,6 +2,7 @@ import os
 from vikingdb.knowledge import VikingKnowledge, RerankDataItem
 from vikingdb.auth import IAM, APIKey
 from vikingdb.knowledge.models.search import (
+    QueryParam,
     SearchCollectionRequest,
     SearchKnowledgeRequest,
     SearchKnowledgeResponse,
@@ -62,7 +63,10 @@ def run_search_knowledge():
         image_query=None,
         pre_processing=None,
         post_processing=None,
-        query_param=None,
+        query_param=QueryParam(
+            doc_filter={"op": "must", "field": "quarter", "conds": ["Q3"]},
+            include_path_list=None,
+        ),
         limit=10,
         dense_weight=0.5,
     )

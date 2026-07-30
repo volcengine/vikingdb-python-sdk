@@ -70,6 +70,8 @@ class AddDocRequest(Model):
     lark_file: Optional["LarkFile"] = Field(default=None, alias="lark_file")
     meta: Optional[List["MetaItem"]] = Field(default=None, alias="meta")
     dedup: Optional["DedupOptions"] = Field(default=None, alias="dedup")
+    path_prefix: Optional[List[str]] = Field(default=None, alias="path_prefix")
+    strategy_resource_id: Optional[str] = Field(default=None, alias="strategy_resource_id")
 
 class DedupOptions(Model):
     content_dedup: Optional[bool] = Field(default=None, alias="content_dedup")

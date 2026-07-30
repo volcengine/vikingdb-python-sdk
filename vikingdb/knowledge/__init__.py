@@ -48,6 +48,7 @@ from .models.point import (
     DeletePointRequest,
 )
 from .models.search import (
+    QueryParam,
     SearchCollectionRequest,
     SearchResponse,
     SearchKnowledgeResponse,
@@ -117,6 +118,7 @@ __all__ = [
     "UpdatePointRequest",
     "ListPointsRequest",
     "DeletePointRequest",
+    "QueryParam",
     "SearchCollectionRequest",
     "SearchResponse",
     "SearchKnowledgeResponse",

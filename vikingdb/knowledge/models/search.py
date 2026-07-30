@@ -12,6 +12,7 @@ from .base import DataApiResponse, Model
 from .point import PointInfo
 
 __all__ = [
+    "QueryParam",
     "SearchCollectionRequest",
     "SearchResult",
     "SearchResponse",
@@ -19,6 +20,10 @@ __all__ = [
     "SearchKnowledgeResult",
     "SearchKnowledgeResponse",
 ]
+
+class QueryParam(Model):
+    doc_filter: Optional[Any] = Field(default=None, alias="doc_filter")
+    include_path_list: Optional[List[str]] = Field(default=None, alias="include_path_list")
 
 class SearchCollectionRequest(Model):
     query: str = Field(alias="query")
@@ -44,7 +49,7 @@ class SearchKnowledgeRequest(Model):
     image_query: Optional[str] = Field(default=None, alias="image_query")
     pre_processing: Optional[Dict[str, Any]] = Field(default=None, alias="pre_processing")
     post_processing: Optional[Dict[str, Any]] = Field(default=None, alias="post_processing")
-    query_param: Optional[Dict[str, Any]] = Field(default=None, alias="query_param")
+    query_param: Optional[QueryParam] = Field(default=None, alias="query_param")
     limit: int = Field(default=10, alias="limit")
     dense_weight: float = Field(default=0.5, alias="dense_weight")
 
