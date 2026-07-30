@@ -38,7 +38,7 @@ from .exceptions import (
     PointNotExistException,
 )
 from .models.base import CollectionMeta
-from .models.doc import DocInfo, DocInfo, ListDocsResponse, ListDocsV2Response, SearchDocsByFilterResponse, AddDocRequest, AddDocV2Request, ListDocsRequest, ListDocsV2Request, SearchDocsByFilterRequest, ListDocsFilter, DedupOptions, MetaItem, AddDocResponse, AddDocResponseData
+from .models.doc import DocInfo, DocInfo, ListDocsResponse, ListDocsV2Response, SearchDocsByFilterResponse, AddDocRequest, AddDocV2Request, ListDocsRequest, ListDocsV2Request, SearchDocsByFilterRequest, ListDocsFilter, DedupOptions, MetaItem, AddDocResponse, AddDocResponseData, AddDocV2Response, AddDocV2ResponseData
 from .models.point import (
     PointInfo,
     ListPointsResponse,
@@ -104,6 +104,8 @@ __all__ = [
     "AddDocV2Request",
     "AddDocResponse",
     "AddDocResponseData",
+    "AddDocV2Response",
+    "AddDocV2ResponseData",
     "ListDocsRequest",
     "ListDocsV2Request",
     "SearchDocsByFilterRequest",

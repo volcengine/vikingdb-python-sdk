@@ -9,7 +9,7 @@ from typing import Mapping, Optional, Union, List
 import warnings
 
 from .models.base import CollectionMeta, CommonResponse, Model
-from .models.doc import DocInfo, ListDocsResponse, ListDocsV2Response, SearchDocsByFilterResponse, AddDocRequest, ListDocsRequest, ListDocsV2Request, SearchDocsByFilterRequest, MetaItem, AddDocV2Request, AddDocResponse
+from .models.doc import DocInfo, ListDocsResponse, ListDocsV2Response, SearchDocsByFilterResponse, AddDocRequest, ListDocsRequest, ListDocsV2Request, SearchDocsByFilterRequest, MetaItem, AddDocV2Request, AddDocResponse, AddDocV2Response
 from .models.point import (
     ListPointsResponse,
     PointInfo,
@@ -57,7 +57,7 @@ class KnowledgeCollection:
         *,
         headers: Optional[Mapping[str, str]] = None,
         timeout: Optional[int] = None,
-    ) -> AddDocResponse:
+    ) -> AddDocV2Response:
         req_payload = (
             request.model_dump(by_alias=True, exclude_none=True)  # type: ignore[attr-defined]
             if isinstance(request, Model)
@@ -65,7 +65,7 @@ class KnowledgeCollection:
         )
         payload = {**self._meta_payload, **req_payload}
         res = self.client.json_exception("AddDocV2", {}, json.dumps(payload), headers=headers, timeout=timeout)
-        response = AddDocResponse.parse_with(res)
+        response = AddDocV2Response.parse_with(res)
         return response
 
     def delete_doc(
