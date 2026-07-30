@@ -174,7 +174,6 @@ class AddDocResponseData(Model):
     resource_id: Optional[str] = Field(default=None, alias="resource_id")
     project: Optional[str] = Field(default=None, alias="project")
     doc_id: Optional[str] = Field(default=None, alias="doc_id")
-    task_id: Optional[int] = Field(default=None, alias="task_id")
     dedup_info: Optional[DedupInfo] = Field(default=None, alias="dedup_info")
     more_info: Optional[str] = Field(default=None, alias="more_info")
 
