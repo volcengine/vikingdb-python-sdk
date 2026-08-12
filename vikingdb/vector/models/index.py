@@ -57,6 +57,11 @@ class SearchBase(RecallBase):
     return_download_url: Optional[bool] = Field(default=None, alias="return_download_url")
     return_analyzed_result: Optional[bool] = Field(default=None, alias="return_analyzed_result")
     return_detail_info: Optional[bool] = Field(default=None, alias="return_detail_info")
+    ignore_unknown_fields: Optional[bool] = Field(default=None, alias="ignore_unknown_fields")
+
+
+class Highlight(Model):
+    enable: Optional[bool] = Field(default=None, alias="enable")
 
 
 class Instruction(Model):
@@ -86,6 +91,7 @@ class SearchItemResult(Model):
     score: Optional[float] = Field(default=None, alias="score")
     origin_score: Optional[float] = Field(default=None, alias="origin_score")
     addition_score: Optional[float] = Field(default=None, alias="addition_score")
+    highlight: Optional[Mapping[str, Mapping[str, List[int]]]] = Field(default=None, alias="highlight")
 
 
 class SearchResult(Model):
@@ -137,6 +143,7 @@ class SearchByKeywordsRequest(SearchBase):
     mode: Optional[str] = Field(default=None, alias="mode")
     keywords: Optional[Sequence[str]] = Field(default=None, alias="keywords")
     query: Optional[str] = Field(default=None, alias="query")
+    highlight: Optional[Highlight] = Field(default=None, alias="highlight")
     case_sensitive: Optional[bool] = Field(default=None, alias="case_sensitive")
     fields: Optional[Sequence[str]] = Field(default=None, alias="fields")
     bm25_k1: Optional[float] = Field(default=None, alias="bm25_k1")
@@ -149,15 +156,31 @@ class SearchByRandomRequest(SearchBase):
 
 class AggRequest(RecallBase):
     op: str = Field(alias="op")
+    group_by: Optional[str] = Field(default=None, alias="group_by")
+    # Deprecated: use group_by instead.
     field: Optional[str] = Field(default=None, alias="field")
+    calc_value_on: Optional[str] = Field(default=None, alias="calc_value_on")
+    ids: Optional[Sequence[Any]] = Field(default=None, alias="ids")
+    weights: Optional[Sequence[float]] = Field(default=None, alias="weights")
     cond: Optional[Mapping[str, Any]] = Field(default=None, alias="cond")
     order: Optional[str] = Field(default=None, alias="order")
+
+
+class VectorWeightedSumResult(Model):
+    vector: List[float] = Field(default_factory=list, alias="vector")
+    found_count: Optional[int] = Field(default=None, alias="found_count")
+    found_ids: List[Any] = Field(default_factory=list, alias="found_ids")
+    weight_sum: Optional[float] = Field(default=None, alias="weight_sum")
 
 
 class AggResult(Model):
     agg: Dict[str, Any] = Field(default_factory=dict, alias="agg")
     op: Optional[str] = Field(default=None, alias="op")
+    group_by: Optional[str] = Field(default=None, alias="group_by")
+    # Deprecated: use group_by instead.
     field: Optional[str] = Field(default=None, alias="field")
+    calc_value_on: Optional[str] = Field(default=None, alias="calc_value_on")
+    vector_weighted_sum: Optional[VectorWeightedSumResult] = Field(default=None, alias="vector_weighted_sum")
 
 
 class AggResponse(DataApiResponse):
