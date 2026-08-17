@@ -46,6 +46,7 @@ from .index import (
     FetchDataInIndexRequest,
     FetchDataInIndexResponse,
     FetchDataInIndexResult,
+    Highlight,
     IndexDataItem,
     Instruction,
     ModelRerank,
@@ -60,6 +61,7 @@ from .index import (
     SearchResponse,
     SearchResult,
     TensorRerank,
+    VectorWeightedSumResult,
 )
 
 __all__ = [
@@ -89,6 +91,7 @@ __all__ = [
     "FetchDataInIndexResponse",
     "FetchDataInIndexResult",
     "FullModalData",
+    "Highlight",
     "IndexDataItem",
     "IndexMeta",
     "Instruction",
@@ -111,4 +114,5 @@ __all__ = [
     "UpdateDataRequest",
     "UpdateDataResponse",
     "UpdateDataResult",
+    "VectorWeightedSumResult",
 ]
