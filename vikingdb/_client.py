@@ -17,6 +17,7 @@ from volcengine.ServiceInfo import ServiceInfo
 from volcengine.base.Request import Request
 from volcengine.base.Service import Service
 import requests
+from requests.adapters import HTTPAdapter
 
 from .auth import Auth, IAM, APIKey, HeaderAuth
 from .exceptions import (
@@ -26,6 +27,8 @@ from .exceptions import (
 
 
 _REQUEST_ID_HEADER = "X-Tt-Logid"
+_DEFAULT_POOL_CONNECTIONS = 10
+_DEFAULT_POOL_MAXSIZE = 10
 
 
 class Client(Service, ABC):
@@ -41,6 +44,9 @@ class Client(Service, ABC):
         sts_token: str = "",
         scheme: str = "http",
         timeout: int = 30,
+        pool_connections: int = _DEFAULT_POOL_CONNECTIONS,
+        pool_maxsize: int = _DEFAULT_POOL_MAXSIZE,
+        pool_block: bool = False,
     ):
         self.region = region
         self.service = service
@@ -57,7 +63,11 @@ class Client(Service, ABC):
         if isinstance(auth, (IAM, APIKey, HeaderAuth)):
             # volcengine Service.init() 可能读取环境变量或 ~/.volc/config 覆盖 AK/SK，
             # 这里确保使用用户传入的 IAM 凭证，因此不使用super().__init__初始化
-            self.session = requests.session()
+            self.session = self._build_session(
+                pool_connections=pool_connections,
+                pool_maxsize=pool_maxsize,
+                pool_block=pool_block,
+            )
         else:
             raise ValueError("auth must be IAM, APIKey or HeaderAuth type")
 
@@ -84,6 +94,28 @@ class Client(Service, ABC):
             timeout,
             scheme=scheme,
         )
+
+    @staticmethod
+    def _build_session(
+        *,
+        pool_connections: int,
+        pool_maxsize: int,
+        pool_block: bool,
+    ) -> requests.Session:
+        if pool_connections <= 0:
+            raise ValueError("pool_connections must be greater than 0")
+        if pool_maxsize <= 0:
+            raise ValueError("pool_maxsize must be greater than 0")
+
+        session = requests.session()
+        adapter = HTTPAdapter(
+            pool_connections=pool_connections,
+            pool_maxsize=pool_maxsize,
+            pool_block=pool_block,
+        )
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        return session
 
     def prepare_request(self, api_info: ApiInfo, params: Optional[Mapping[str, Any]], doseq: int = 0):
         """Prepare a volcengine request without adding implicit headers."""

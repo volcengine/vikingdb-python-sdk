@@ -22,6 +22,8 @@ def main() -> None:
         auth=auth,
         scheme="https",
         timeout=30,
+        pool_connections=20,
+        pool_maxsize=50,
     )
     index_client = client.index(
         collection_name=os.environ["VIKINGDB_COLLECTION"],

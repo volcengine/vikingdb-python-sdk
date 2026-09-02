@@ -66,6 +66,8 @@ class VikingDB(Client):
         scheme: str = "https",
         sts_token: str = "",
         timeout: int = 30,
+        pool_connections: int = 10,
+        pool_maxsize: int = 10,
     ) -> None:
         if auth is None:
             raise ValueError("auth is required for VikingDB")
@@ -78,6 +80,8 @@ class VikingDB(Client):
             sts_token=sts_token,
             scheme=scheme,
             timeout=timeout,
+            pool_connections=pool_connections,
+            pool_maxsize=pool_maxsize,
         )
         try:
             resp = self.session.get(f"{scheme}://{host}/api/vikingdb/Ping")
@@ -317,6 +321,8 @@ class VikingVector(VikingDB):
         scheme: str = "https",
         sts_token: str = "",
         timeout: int = 30,
+        pool_connections: int = 10,
+        pool_maxsize: int = 10,
     ) -> None:
         warnings.warn(
             "VikingVector is deprecated; use VikingDB instead.",
@@ -330,4 +336,6 @@ class VikingVector(VikingDB):
             scheme=scheme,
             sts_token=sts_token,
             timeout=timeout,
+            pool_connections=pool_connections,
+            pool_maxsize=pool_maxsize,
         )

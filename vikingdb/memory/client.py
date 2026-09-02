@@ -38,6 +38,8 @@ class VikingMem(Client):
         sts_token: str = "",
         scheme: str = "http",
         timeout: int = 30,
+        pool_connections: int = 10,
+        pool_maxsize: int = 10,
     ):
         """
         Initialize Viking Memory Service
@@ -63,6 +65,8 @@ class VikingMem(Client):
             sts_token=sts_token,
             scheme=scheme,
             timeout=timeout,
+            pool_connections=pool_connections,
+            pool_maxsize=pool_maxsize,
         )
 
     def ping(self):

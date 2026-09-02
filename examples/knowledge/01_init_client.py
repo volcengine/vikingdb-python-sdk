@@ -6,7 +6,11 @@ from vikingdb.auth import IAM
 def init_client():
     ak = os.getenv("VOLC_AK")
     sk = os.getenv("VOLC_SK")
-    client = VikingKnowledge(auth=IAM(ak=ak, sk=sk))
+    client = VikingKnowledge(
+        auth=IAM(ak=ak, sk=sk),
+        pool_connections=20,
+        pool_maxsize=50,
+    )
     return client
 
 

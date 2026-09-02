@@ -36,6 +36,8 @@ client = VikingDB(
     auth=auth,
     scheme="https",
     timeout=30,
+    pool_connections=20,
+    pool_maxsize=50,
 )
 index = client.index(
     collection_name=os.environ["VIKINGDB_COLLECTION"],
@@ -57,6 +59,8 @@ client = VikingMem(
     region="cn-beijing",
     auth=auth,
     scheme="http",
+    pool_connections=20,
+    pool_maxsize=50,
 )
 
 # Get collection
@@ -104,6 +108,8 @@ client = VikingKnowledge(
     host="api-knowledgebase.mlp.cn-beijing.volces.com",
     region="cn-beijing",
     scheme="http",
+    pool_connections=20,
+    pool_maxsize=50,
 )
 
 collection = client.collection(
@@ -120,6 +126,25 @@ print(f"request_id={resp.request_id} hits={len(resp.result.result_list or [])}")
 # API-key auth for service-level chat
 svc_client = VikingKnowledge(auth=APIKey(api_key=os.getenv("VIKING_SERVICE_API_KEY")))
 ```
+
+### Connection Pool Tuning
+
+For high-concurrency synchronous workloads, the client constructors support
+`pool_connections` and `pool_maxsize` and pass them through to
+the underlying `requests` `HTTPAdapter`.
+
+```python
+client = VikingDB(
+    host=os.environ["VIKINGDB_HOST"],
+    region=os.environ["VIKINGDB_REGION"],
+    auth=auth,
+    pool_connections=20,
+    pool_maxsize=50,
+)
+```
+
+- `pool_connections`: number of cached connection pools
+- `pool_maxsize`: max reusable connections per host
 
 ### Example Guides
 

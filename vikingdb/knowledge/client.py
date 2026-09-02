@@ -43,6 +43,8 @@ class VikingKnowledge(Client):
         sts_token: str = "",
         scheme: str = "http",
         timeout: int = 30,
+        pool_connections: int = 10,
+        pool_maxsize: int = 10,
     ):
         super().__init__(
             host=host,
@@ -52,6 +54,8 @@ class VikingKnowledge(Client):
             sts_token=sts_token,
             scheme=scheme,
             timeout=timeout,
+            pool_connections=pool_connections,
+            pool_maxsize=pool_maxsize,
         )
 
     def _build_api_info(self):

@@ -18,6 +18,8 @@ client = VikingDB(
     auth=auth,
     scheme="https",
     timeout=30,
+    pool_connections=20,
+    pool_maxsize=50,
 )
 index = client.index(
     collection_name=os.environ["VIKINGDB_COLLECTION"],

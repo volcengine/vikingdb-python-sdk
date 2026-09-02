@@ -21,6 +21,8 @@ client = VikingMem(
     region="cn-beijing",
     auth=_auth,
     scheme="http",
+    pool_connections=20,
+    pool_maxsize=50,
 )
 
 print("✅ Client initialized successfully")
