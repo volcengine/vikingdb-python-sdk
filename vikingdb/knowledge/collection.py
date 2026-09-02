@@ -47,7 +47,7 @@ class KnowledgeCollection:
             else dict(request)
         )
         payload = {**self._meta_payload, **req_payload}
-        res = self.client.json_exception("AddDoc", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("AddDoc", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = AddDocResponse.parse_with(res)
         return response
 
@@ -64,7 +64,7 @@ class KnowledgeCollection:
             else dict(request)
         )
         payload = {**self._meta_payload, **req_payload}
-        res = self.client.json_exception("AddDocV2", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("AddDocV2", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = AddDocV2Response.parse_with(res)
         return response
 
@@ -76,7 +76,7 @@ class KnowledgeCollection:
         timeout: Optional[int] = None,
     ) -> CommonResponse:
         payload = {**self._meta_payload, "doc_id": doc_id}
-        res = self.client.json_exception("DeleteDoc", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("DeleteDoc", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = CommonResponse.model_validate(res)
         return response
 
@@ -91,7 +91,7 @@ class KnowledgeCollection:
         payload = {**self._meta_payload, "doc_id": doc_id}
         if return_token_usage:
             payload["return_token_usage"] = True
-        res = self.client.json_exception("GetDocInfo", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("GetDocInfo", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         data_obj = res["data"] if isinstance(res, dict) and "data" in res else {}
         if not isinstance(data_obj, dict):
             data_obj = {}
@@ -113,7 +113,7 @@ class KnowledgeCollection:
             else dict(request)
         )
         payload: dict = {**self._meta_payload, **req_payload}
-        res = self.client.json_exception("ListDocs", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("ListDocs", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = ListDocsResponse.parse_with(res)
         return response
 
@@ -130,7 +130,7 @@ class KnowledgeCollection:
             else dict(request)
         )
         payload: dict = {**self._meta_payload, **req_payload}
-        res = self.client.json_exception("ListDocsV2", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("ListDocsV2", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = ListDocsV2Response.parse_with(res)
         return response
 
@@ -147,7 +147,7 @@ class KnowledgeCollection:
             else dict(request)
         )
         payload: dict = {**self._meta_payload, **req_payload}
-        res = self.client.json_exception("SearchDocsByFilter", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("SearchDocsByFilter", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = SearchDocsByFilterResponse.parse_with(res)
         return response
 
@@ -160,7 +160,7 @@ class KnowledgeCollection:
         timeout: Optional[int] = None,
     ) -> CommonResponse:
         payload = {**self._meta_payload, "doc_id": doc_id, "meta": [item.model_dump(by_alias=True) for item in meta]}
-        res = self.client.json_exception("UpdateDocMeta", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("UpdateDocMeta", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = CommonResponse.model_validate(res)
         return response
 
@@ -173,7 +173,7 @@ class KnowledgeCollection:
         timeout: Optional[int] = None,
     ) -> CommonResponse:
         payload = {**self._meta_payload, "doc_id": doc_id, "doc_name": doc_name}
-        res = self.client.json_exception("UpdateDoc", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("UpdateDoc", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = CommonResponse.model_validate(res)
         return response
 
@@ -188,7 +188,7 @@ class KnowledgeCollection:
         payload = {**self._meta_payload, "point_id": point_id}
         if get_attachment_link:
             payload["get_attachment_link"] = True
-        res = self.client.json_exception("GetPointInfo", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("GetPointInfo", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         data_obj = res["data"] if isinstance(res, dict) and "data" in res else {}
         if not isinstance(data_obj, dict):
             data_obj = {}
@@ -210,7 +210,7 @@ class KnowledgeCollection:
             else dict(request)
         )
         payload: dict = {**self._meta_payload, **req_payload}
-        res = self.client.json_exception("ListPoints", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("ListPoints", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = ListPointsResponse.parse_with(res)
         return response
 
@@ -227,7 +227,7 @@ class KnowledgeCollection:
             else dict(request)
         )
         payload = {**self._meta_payload, **req_payload}
-        res = self.client.json_exception("AddPoint", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("AddPoint", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = PointAddResponse.parse_with(res)
         return response
 
@@ -245,7 +245,7 @@ class KnowledgeCollection:
             else dict(update)
         )
         payload = {**self._meta_payload, "point_id": point_id, **upd_payload}
-        res = self.client.json_exception("UpdatePoint", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("UpdatePoint", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = CommonResponse.model_validate(res)
         return response
 
@@ -262,7 +262,7 @@ class KnowledgeCollection:
             else dict(request)
         )
         payload = {**self._meta_payload, **req_payload}
-        res = self.client.json_exception("DeletePoint", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("DeletePoint", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = CommonResponse.model_validate(res)
         return response
 
@@ -279,7 +279,7 @@ class KnowledgeCollection:
             else dict(request)
         )
         payload: dict = {**self._meta_payload, **req_payload, "name": self._meta.collection_name}
-        res = self.client.json_exception("SearchCollection", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("SearchCollection", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = SearchResponse.parse_with(res)
         return response
 
@@ -297,6 +297,6 @@ class KnowledgeCollection:
             else dict(request)
         )
         payload: dict = {**self._meta_payload, **req_payload, "name": self._meta.collection_name}
-        res = self.client.json_exception("SearchKnowledge", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.client.json_exception("SearchKnowledge", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = SearchKnowledgeResponse.parse_with(res)
         return response

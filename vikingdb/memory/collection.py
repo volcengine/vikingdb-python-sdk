@@ -90,7 +90,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("AddEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("AddEvent", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     async def async_add_event(
@@ -139,7 +139,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("AddEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("AddEvent", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     def update_event(
@@ -180,7 +180,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("UpdateEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("UpdateEvent", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     async def async_update_event(
@@ -221,7 +221,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("UpdateEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("UpdateEvent", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     def delete_event(
@@ -251,7 +251,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("DeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("DeleteEvent", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     async def async_delete_event(
@@ -281,7 +281,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("DeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("DeleteEvent", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     def batch_delete_event(
@@ -315,7 +315,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("BatchDeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("BatchDeleteEvent", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     async def async_batch_delete_event(
@@ -349,7 +349,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("BatchDeleteEvent", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("BatchDeleteEvent", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     # ==================== Profile Operations ====================
     
@@ -398,7 +398,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("AddProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("AddProfile", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     async def async_add_profile(
@@ -446,7 +446,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("AddProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("AddProfile", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     def update_profile(
@@ -479,7 +479,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("UpdateProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("UpdateProfile", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     async def async_update_profile(
@@ -512,7 +512,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("UpdateProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("UpdateProfile", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
 
     def delete_profile(
@@ -542,7 +542,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("DeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("DeleteProfile", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     async def async_delete_profile(
@@ -572,7 +572,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("DeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("DeleteProfile", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
 
     def trigger_update_profile(
@@ -606,7 +606,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("TriggerUpdateProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("TriggerUpdateProfile", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
 
     async def async_trigger_update_profile(
@@ -631,7 +631,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("TriggerUpdateProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("TriggerUpdateProfile", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     def batch_delete_profile(
@@ -661,7 +661,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("BatchDeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("BatchDeleteProfile", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     async def async_batch_delete_profile(
@@ -691,7 +691,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("BatchDeleteProfile", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("BatchDeleteProfile", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     # ==================== Session Operations ====================
     
@@ -736,7 +736,7 @@ class Collection:
         if store_file is not None:
             params["store_file"] = store_file
 
-        res = self.client.json_exception("AddSession", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("AddSession", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     async def async_add_session(
@@ -780,7 +780,7 @@ class Collection:
         if store_file is not None:
             params["store_file"] = store_file
 
-        res = await self.client.async_json_exception("AddSession", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("AddSession", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     # ==================== Session Info Operations ====================
@@ -812,7 +812,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("GetSessionInfo", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("GetSessionInfo", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     async def async_get_session_info(
@@ -842,7 +842,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("GetSessionInfo", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("GetSessionInfo", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     # ==================== Search Operations ====================
@@ -882,7 +882,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("SearchMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("SearchMemory", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     async def async_search_memory(
@@ -920,7 +920,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("SearchMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("SearchMemory", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
     
     def search_event_memory(
@@ -948,7 +948,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("SearchEventMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("SearchEventMemory", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
 
     def search_profile_memory(
@@ -973,7 +973,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = self.client.json_exception("SearchProfileMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = self.client.json_exception("SearchProfileMemory", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
 
     async def async_search_event_memory(
@@ -1004,7 +1004,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("SearchEventMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("SearchEventMemory", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
 
     async def async_search_profile_memory(
@@ -1032,7 +1032,7 @@ class Collection:
         if self.resource_id is not None:
             params["resource_id"] = self.resource_id
 
-        res = await self.client.async_json_exception("SearchProfileMemory", {}, json.dumps(params, cls=EnumEncoder), headers=headers, timeout=timeout)
+        res = await self.client.async_json_exception("SearchProfileMemory", {}, json.dumps(params, cls=EnumEncoder, ensure_ascii=False), headers=headers, timeout=timeout)
         return res
 
     

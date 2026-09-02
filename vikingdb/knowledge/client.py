@@ -148,7 +148,7 @@ class VikingKnowledge(Client):
             payload["rerank_instruction"] = rerank_instruction
         if endpoint_id is not None:
             payload["endpoint_id"] = endpoint_id
-        res = self.json_exception("Rerank", {}, json.dumps(payload), headers=headers, timeout=timeout)
+        res = self.json_exception("Rerank", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
         response = RerankResponse.parse_with(res)
         return response
 
@@ -166,11 +166,11 @@ class VikingKnowledge(Client):
         )
         if bool(payload.get("stream")):
             def _gen():
-                for res in self.stream_json_exception("ChatCompletion", {}, json.dumps(payload), headers=headers, timeout=timeout):
+                for res in self.stream_json_exception("ChatCompletion", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout):
                     yield ChatCompletionResponse.parse_with(res)
             return _gen()
         else:
-            res = self.json_exception("ChatCompletion", {}, json.dumps(payload), headers=headers, timeout=timeout)
+            res = self.json_exception("ChatCompletion", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
             return ChatCompletionResponse.parse_with(res)
 
     def service_chat(
@@ -187,9 +187,9 @@ class VikingKnowledge(Client):
         )
         if bool(payload.get("stream")):
             def _gen():
-                for res in self.stream_json_exception("ServiceChat", {}, json.dumps(payload), headers=headers, timeout=timeout):
+                for res in self.stream_json_exception("ServiceChat", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout):
                     yield ServiceChatResponse.parse_with(res)
             return _gen()
         else:
-            res = self.json_exception("ServiceChat", {}, json.dumps(payload), headers=headers, timeout=timeout)
+            res = self.json_exception("ServiceChat", {}, json.dumps(payload, ensure_ascii=False), headers=headers, timeout=timeout)
             return ServiceChatResponse.parse_with(res)
