@@ -99,6 +99,7 @@ class SearchResult(Model):
     filter_matched_count: Optional[int] = Field(default=None, alias="filter_matched_count")
     total_return_count: Optional[int] = Field(default=None, alias="total_return_count")
     real_text_query: Optional[str] = Field(default=None, alias="real_text_query")
+    effective_keywords: Optional[Mapping[str, List[str]]] = Field(default=None, alias="effective_keywords")
     token_usage: Dict[str, Any] = Field(default_factory=dict, alias="token_usage")
     schema: Optional[Mapping[str, Any]] = Field(default=None, alias="schema")
     rerank_error: Optional[str] = Field(default=None, alias="rerank_error")
@@ -146,6 +147,7 @@ class SearchByKeywordsRequest(SearchBase):
     highlight: Optional[Highlight] = Field(default=None, alias="highlight")
     case_sensitive: Optional[bool] = Field(default=None, alias="case_sensitive")
     fields: Optional[Sequence[str]] = Field(default=None, alias="fields")
+    fields_weights: Optional[Mapping[str, float]] = Field(default=None, alias="fields_weights")
     bm25_k1: Optional[float] = Field(default=None, alias="bm25_k1")
     bm25_b: Optional[float] = Field(default=None, alias="bm25_b")
 
